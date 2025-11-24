@@ -6,12 +6,15 @@
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "export": "next export"
   },
   "dependencies": {
+    "flagpack": "^1.0.5",
     "next": "16.0.1",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "react-phone-number-input": "^3.4.14"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

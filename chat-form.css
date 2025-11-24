@@ -1,0 +1,376 @@
+:root {
+  color-scheme: light dark;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --chat-bg: var(--chat-bg-light, #ffffff);
+  --chat-surface: #101828;
+  --chat-border: #101828;
+  --chat-text: #ffffff;
+  --chat-subtle: #6b7280;
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --bubble-user: #4f46e5;
+  --bubble-bot:#101828;
+  --shadow-lg: 0 15px 35px rgba(15, 23, 42, 0.18);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --chat-bg: #0f172a;
+    --chat-surface: rgba(30, 41, 59, 0.92);
+    --chat-border: rgba(255, 255, 255, 0.08);
+    --chat-text: #f8fafc;
+    --chat-subtle: #94a3b8;
+    --bubble-bot: rgba(255, 255, 255, 0.1);
+    --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.65);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at top, rgba(79, 70, 229, 0.18), transparent 55%), var(--chat-bg);
+  color: var(--chat-text);
+  padding: 1.5rem;
+}
+
+.chat-shell {
+  width: min(420px, 100%);
+  height: min(640px, 95vh);
+  background: var(--chat-surface);
+  border: 1px solid var(--chat-border);
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+}
+
+.chat-shell__header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--chat-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chat-shell__title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.chat-shell__subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--chat-subtle);
+}
+
+.chat-shell__close {
+  border: none;
+  background: rgba(15, 23, 42, 0.05);
+  color: inherit;
+  font-size: 1.5rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.chat-shell__close:hover {
+  background: rgba(15, 23, 42, 0.12);
+}
+
+.chat-log {
+  flex: 1;
+  padding: 1.25rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  background: linear-gradient(180deg, rgba(79, 70, 229, 0.04), transparent);
+}
+
+.chat-bubble {
+  padding: 0.8rem 1rem;
+  border-radius: 16px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  width: fit-content;
+  max-width: 85%;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.chat-bubble.user {
+  margin-left: auto;
+  background: var(--bubble-user);
+  color: #877c7c;
+}
+
+.chat-bubble.bot {
+  background: var(--bubble-bot);
+  color: var(--chat-text);
+}
+
+.chat-input {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem 1.5rem;
+  border-top: 1px solid var(--chat-border);
+}
+
+.chat-input input {
+  flex: 1;
+  border-radius: 999px;
+  border: 1px solid var(--chat-border);
+  padding: 0.85rem 1.25rem;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: inherit;
+}
+
+.chat-input input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.chat-input button {
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  color: #577695;
+  padding: 0 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.chat-input button:hover {
+  background: var(--accent-hover);
+}
+
+.meeting-form__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 100;
+  padding: 1.25rem;
+}
+
+.meeting-form__overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.meeting-form__card {
+  background: var(--chat-surface);
+  color: var(--chat-text);
+  width: min(360px, 100%);
+  border-radius: 22px;
+  padding: 1.75rem;
+  border: 1px solid var(--chat-border);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(20px) scale(0.98);
+  transition: transform 0.25s ease;
+}
+
+.meeting-form__overlay.open .meeting-form__card {
+  transform: translateY(0) scale(1);
+}
+
+.meeting-form__close {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 1.5rem;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
+}
+
+.meeting-form__card h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.meeting-form__hint {
+  margin: 0.25rem 0 1.25rem;
+  font-size: 0.9rem;
+  color: var(--chat-subtle);
+}
+
+.meeting-form__card form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.meeting-form__card label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--chat-subtle);
+}
+
+.meeting-form__card input,
+.meeting-form__card select {
+  border-radius: 14px;
+  border: 1px solid var(--chat-border);
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.92);
+  color: inherit;
+}
+
+.meeting-form__card input:focus,
+.meeting-form__card select:focus {
+  outline: 2px solid rgba(79, 70, 229, 0.4);
+  border-color: transparent;
+}
+
+.meeting-form__submit {
+  margin-top: 0.5rem;
+  border-radius: 16px;
+  border: none;
+  background: linear-gradient(120deg, #6366f1, #8b5cf6);
+  color: #577695;
+  font-weight: 600;
+  padding: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.meeting-form__submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3);
+}
+
+.meeting-form__error {
+  color: #f87171;
+  font-size: 0.85rem;
+  min-height: 1.2em;
+  margin-top: 0.75rem;
+  text-align: center;
+}
+
+/*
+  Embedded Form Styles
+*/
+.form-container {
+  background: var(--chat-surface);
+  border: 1px solid var(--chat-border);
+  padding: 1.25rem;
+  width: 100%;
+  max-width: 100%;
+  border-radius: 16px;
+  margin-top: 0.5rem;
+}
+
+.embedded-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-message {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--chat-text);
+}
+
+.meeting-form-embedded {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--chat-border);
+  border-radius: 12px;
+  font-size: 0.9rem;
+  background: rgba(56, 51, 51, 0.8);
+  color: var(--chat-text);
+  transition: border-color 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: #fff;
+}
+
+.form-submit-btn {
+  width: 100%;
+  padding: 0.85rem;
+  border: none;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.form-submit-btn:hover {
+  background: var(--accent-hover);
+}
+
+.form-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.form-error {
+  color: #ef4444;
+  font-size: 0.85rem;
+  margin: 0;
+  text-align: center;
+}
+
+.form-success {
+  color: #10b981;
+  font-weight: 600;
+  text-align: center;
+  padding: 1rem;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 12px;
+}
+
+@media (max-width: 520px) {
+  body {
+    padding: 0.75rem;
+  }
+
+  .chat-shell {
+    border-radius: 18px;
+    height: 95vh;
+  }
+
+  .chat-shell__header,
+  .chat-input {
+    padding-inline: 1rem;
+  }
+
+  .meeting-form__card {
+    padding: 1.25rem;
+  }
+}
+

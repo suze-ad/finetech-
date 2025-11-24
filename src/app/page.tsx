@@ -1,9 +1,131 @@
 'use client'
 
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, ChangeEvent, FormEvent, useCallback } from 'react'
+import PhoneInputField from './PhoneInput'
 
 type ChatMessage = { id: string; from: 'user' | 'bot'; text: string }
+type TimeSlot = { value: string; label: string }
+type SchedulingFormProps = {
+  slots: TimeSlot[]
+  onFormSubmit: (data: { name: string; email: string; phone?: string; preferred_time: string }) => Promise<void>
+  initialMessage: string
+}
+
+function SchedulingForm({ slots, onFormSubmit, initialMessage }: SchedulingFormProps) {
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', preferred_time: '' })
+  const [loading, setLoading] = useState(false)
+  const [submitMessage, setSubmitMessage] = useState(initialMessage || "We're ready to schedule your call.")
+
+  function handleInputChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+
+    if (!formData.name || !formData.email || !formData.preferred_time) {
+      setSubmitMessage('Please fill in your Name, Email, and select a Time Slot.')
+      return
+    }
+
+    setLoading(true)
+    setSubmitMessage('Sending your booking request...')
+
+    try {
+      await onFormSubmit(formData)
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Please try again.'
+      setSubmitMessage(`Submission failed: ${message}`)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="bg-[#101828] p-4 shadow-lg rounded-xl my-4 space-y-4 text-white">
+      <p className="text-sm font-semibold text-white">{submitMessage}</p>
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <input
+          type="text"
+          name="name"
+          placeholder="Full Name"
+          value={formData.name}
+          onChange={handleInputChange}
+          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+          required
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email Address"
+          value={formData.email}
+          onChange={handleInputChange}
+          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+          required
+        />
+        <PhoneInputField
+          onChange={(phone: string | undefined) => setFormData(prev => ({ ...prev, phone: phone || '' }))}
+        />
+        <select
+          name="preferred_time"
+          value={formData.preferred_time}
+          onChange={handleInputChange}
+          className="w-full p-2 border border-gray-300 rounded-lg bg-[#101828] focus:ring-blue-500 focus:border-blue-500"
+          required
+          aria-label="Preferred meeting time"
+        >
+          <option value="" disabled>Select a Preferred Time Slot</option>
+          {slots?.map(slot => (
+            <option key={slot.value} value={slot.value}>
+              {slot.label}
+            </option>
+          ))}
+        </select>
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full py-2 rounded-lg text-white font-bold transition duration-150 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 shadow-md'}`}
+        >
+          {loading ? 'Booking...' : 'Confirm Meeting'}
+        </button>
+      </form>
+    </div>
+  )
+}
+
+const SESSION_STORAGE_KEY = 'aisyncso:chat:session_id'
+
+function generateSessionId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID()
+  }
+  return `session_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`
+}
+
+function readSessionIdFromStorage() {
+  if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
+    return null
+  }
+  try {
+    return window.localStorage.getItem(SESSION_STORAGE_KEY)
+  } catch (err) {
+    console.warn('Unable to read chat session from localStorage:', err)
+    return null
+  }
+}
+
+function persistSessionId(id: string) {
+  if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
+    return
+  }
+  try {
+    window.localStorage.setItem(SESSION_STORAGE_KEY, id)
+  } catch (err) {
+    console.warn('Unable to store chat session in localStorage:', err)
+  }
+}
 
 export default function Home() {
   // Confirmed client mount flag. `isClient` becomes true only inside a
@@ -14,76 +136,81 @@ export default function Home() {
   const [chatOpen, setChatOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [formState, setFormState] = useState<{ isVisible: boolean; slots: TimeSlot[]; initialMessage: string }>({
+    isVisible: false,
+    slots: [],
+    initialMessage: '',
+  })
+  const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
+  const [formStatusMessage, setFormStatusMessage] = useState<string>('')
   const inputRef = useRef<HTMLInputElement | null>(null)
   const chatScrollRef = useRef<HTMLDivElement | null>(null)
+  const sessionIdRef = useRef<string | null>(null)
 
   // Run once on client to set `isClient` and read saved theme safely.
   useEffect(() => {
     // ensure we run this only in a proper browser-like environment
     if (typeof window === 'undefined') return
 
-    // Defer setting isClient to the next animation frame to give the
-    // environment (some test runners) time to fully initialize mocked globals.
-    const raf = typeof window.requestAnimationFrame === 'function'
-      ? window.requestAnimationFrame
-      : (cb: FrameRequestCallback) => setTimeout(cb, 0)
+      // Defer setting isClient to the next animation frame to give the
+      // environment (some test runners) time to fully initialize mocked globals.
+      const raf = typeof window.requestAnimationFrame === 'function'
+        ? window.requestAnimationFrame
+        : (cb: FrameRequestCallback) => setTimeout(cb, 0)
 
-    raf(() => {
-      setIsClient(true)
+      raf(() => {
+        setIsClient(true)
 
-      // Safely read from localStorage if available
+        // Safely read from localStorage if available
+        try {
+          if (typeof window.localStorage !== 'undefined' && window.localStorage !== null) {
+            const saved = window.localStorage.getItem('aisyncso:dark')
+            setDark(saved === '1')
+          }
+        } catch (err) {
+          // storage could be disabled (e.g. in private mode) — keep default
+          console.warn('Unable to read localStorage for theme:', err)
+        }
+      })
+
+      // cleanup if component unmounts before raf fires
+      return () => {
+        try {
+          if (typeof window !== 'undefined' && typeof window.cancelAnimationFrame === 'function') {
+            // no-op: we didn't store id when using setTimeout fallback. harmless.
+          }
+        } catch {
+          // ignore
+        }
+      }
+    }, [])
+
+    // When `dark` changes on client, persist and toggle the DOM class safely.
+    useEffect(() => {
+      if (!isClient) return // never run on server
+
+      // Persist preference to localStorage (guarded)
       try {
-        if (typeof window.localStorage !== 'undefined' && window.localStorage !== null) {
-          const saved = window.localStorage.getItem('aisyncso:dark')
-          setDark(saved === '1')
+        if (typeof window !== 'undefined' && window.localStorage) {
+          window.localStorage.setItem('aisyncso:dark', dark ? '1' : '0')
         }
       } catch (err) {
-        // storage could be disabled (e.g. in private mode) — keep default
-        // eslint-disable-next-line no-console
-        console.warn('Unable to read localStorage for theme:', err)
+        // ignore storage write errors
+        console.warn('Could not write theme to localStorage:', err)
       }
-    })
 
-    // cleanup if component unmounts before raf fires
-    return () => {
+      // Toggle class on documentElement only if classList API exists
       try {
-        if (typeof window !== 'undefined' && typeof window.cancelAnimationFrame === 'function') {
-          // no-op: we didn't store id when using setTimeout fallback. harmless.
+        if (typeof document !== 'undefined' && document.documentElement && document.documentElement.classList && typeof document.documentElement.classList.toggle === 'function') {
+          document.documentElement.classList.toggle('dark', dark)
         }
-      } catch (_) {
-        // ignore
+      } catch (err) {
+        // ignore DOM errors
+        console.warn('Could not toggle dark class on documentElement:', err)
       }
-    }
-  }, [])
+    }, [dark, isClient]);
 
-  // When `dark` changes on client, persist and toggle the DOM class safely.
-  useEffect(() => {
-    if (!isClient) return // never run on server
-
-    // Persist preference to localStorage (guarded)
-    try {
-      if (typeof window !== 'undefined' && window.localStorage) {
-        window.localStorage.setItem('aisyncso:dark', dark ? '1' : '0')
-      }
-    } catch (err) {
-      // ignore storage write errors
-      // eslint-disable-next-line no-console
-      console.warn('Could not write theme to localStorage:', err)
-    }
-
-    // Toggle class on documentElement only if classList API exists
-    try {
-      if (typeof document !== 'undefined' && document.documentElement && (document.documentElement as any).classList && typeof (document.documentElement as any).classList.toggle === 'function') {
-        document.documentElement.classList.toggle('dark', dark)
-      }
-    } catch (err) {
-      // ignore DOM errors
-      // eslint-disable-next-line no-console
-      console.warn('Could not toggle dark class on documentElement:', err)
-    }
-  }, [dark, isClient])
-
-  function toggleDark() {
+    function toggleDark() {
     setDark(d => !d)
   }
 
@@ -105,116 +232,337 @@ export default function Home() {
     return m
   }
 
-  // Send message to n8n webhook workflow
-  // Generate or retrieve session ID (store in localStorage or state)
-  function getOrCreateSessionId(): string {
-    // Ensure we're on the client side
-    if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
-      // Fallback for SSR or when localStorage is unavailable
-      return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  const ensureSessionId = useCallback((options: { createIfMissing?: boolean } = { createIfMissing: true }) => {
+    if (sessionIdRef.current) return sessionIdRef.current
+
+    const existing = readSessionIdFromStorage()
+    if (existing) {
+      sessionIdRef.current = existing
+      return existing
     }
-    
-    try {
-      let sessionId = window.localStorage.getItem('chatbot_session_id')
-      if (!sessionId) {
-        sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-        window.localStorage.setItem('chatbot_session_id', sessionId)
-      }
-      return sessionId
-    } catch (error) {
-      // If localStorage fails (e.g., private browsing), generate a new session ID
-      console.warn('localStorage unavailable, using temporary session ID:', error)
-      return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    }
+
+    if (options.createIfMissing === false) return null
+
+    const newId = generateSessionId()
+    sessionIdRef.current = newId
+    persistSessionId(newId)
+    return newId
+  }, [])
+
+  function openChat() {
+    setChatOpen(true)
+    ensureSessionId({ createIfMissing: true })
   }
 
-async function sendMessageToBot(userText: string) {
-    if (!userText) return
-    
-    // Add user message immediately
-    addMessage('user', userText)
+  useEffect(() => {
+    if (!isClient) return
+    ensureSessionId({ createIfMissing: false })
+  }, [isClient, ensureSessionId])
+
+  useEffect(() => {
+    if (!isClient || !chatOpen) return
+    ensureSessionId({ createIfMissing: true })
+  }, [chatOpen, isClient, ensureSessionId])
+
+  async function sendMessageToBot(userInput: string | Record<string, unknown>) {
+    const isObjectPayload = typeof userInput === 'object'
+    const userText = typeof userInput === 'string' ? userInput : (userInput.chatInput as string || userInput.message as string || userInput.userMessage as string || '')
+
+    if (!userText && !isObjectPayload) return
+
+    if (!isObjectPayload && userText) {
+      addMessage('user', userText)
+    }
+
     setIsLoading(true)
 
     try {
       // Get or create session ID for conversation continuity
-      const sessionId = getOrCreateSessionId()
-      
-      // Send POST request to n8n webhook
-      const response = await fetch('https://aisyncso.app.n8n.cloud/webhook/chatbot', {
+      const sessionId = ensureSessionId({ createIfMissing: true })
+
+      const payload = isObjectPayload
+        ? {
+            session_id: userInput.session_id || sessionId,
+            sessionId: userInput.sessionId || sessionId,
+            type: userInput.type || 'chat',
+            chatInput: userInput.chatInput || userInput.message || userInput.userMessage || '',
+            formData: userInput.formData || null,
+            ...userInput,
+          }
+        : {
+            type: 'chat',
+            chatInput: userText,
+            session_id: sessionId, // CRITICAL: Required for conversation memory
+            sessionId,
+          }
+
+      // Send POST request through Next.js API route proxy to avoid CORS issues
+      const response = await fetch('/api/chatbot', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          message: userText,
-          session_id: sessionId, // CRITICAL: Required for conversation memory
-        }),
+        body: JSON.stringify(payload),
       })
 
       if (!response.ok) {
-        const errorText = await response.text().catch(() => '')
-        throw new Error(`HTTP error! status: ${response.status}${errorText ? ` - ${errorText}` : ''}`)
+        const errorData = await response.json().catch(() => ({}))
+        console.error('HTTP error response:', {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorData
+        })
+        
+        // Extract error message with better handling
+        const errorMessage = errorData.message || errorData.error || `HTTP error! status: ${response.status}`
+        throw new Error(errorMessage)
       }
 
-      // Get response text first to check if it's empty
-      const responseText = await response.text()
+      // Parse JSON response from API route
+      const data = await response.json()
+      console.log('API response data:', data)
       
-      // Handle empty responses (204 No Content or empty body)
-      if (!responseText || responseText.trim() === '') {
-        console.warn('Empty response from n8n webhook. Status:', response.status)
-        // If it's a 204 No Content, that's actually OK - the webhook processed the request
-        if (response.status === 204) {
-          const defaultReply = 'Message received! Your n8n workflow processed the request but didn\'t return a response. Please configure your workflow to return a response.'
-          addMessage('bot', defaultReply)
-          return defaultReply
-        }
-        // For other empty responses, show a helpful message
-        const emptyReply = 'I received your message, but the server didn\'t return a response. Please check your n8n workflow configuration.'
-        addMessage('bot', emptyReply)
-        return emptyReply
-      }
-
-      // Try to parse as JSON, fallback to plain text
-      let data: any
-      const contentType = response.headers.get('content-type') || ''
-      
-      if (contentType.includes('application/json')) {
-        try {
-          data = JSON.parse(responseText)
-        } catch (parseError) {
-          // If JSON parsing fails, treat as plain text
-          console.warn('Failed to parse JSON, treating as plain text:', parseError)
-          data = responseText
-        }
-      } else {
-        // Not JSON, treat as plain text
-        data = responseText
+      // Handle error responses from the proxy
+      if (data.error) {
+        console.warn('Error from webhook:', data)
+        const errorReply = data.message || 'I received your message, but the server didn\'t return a response. Please check your n8n workflow configuration.'
+        addMessage('bot', errorReply)
+        return errorReply
       }
       
       // Extract the bot's reply from the response
-      // Your n8n workflow returns: { response: "...", session_id: "..." }
-      const botReply = data.response || data.message || data.text || 
-                       (typeof data === 'string' ? data : 'Sorry, I encountered an error.')
-      
-      addMessage('bot', botReply)
+      // Support { output }, { reply, step }, { response }, { message }, { text } formats
+      const botReply = data.output || data.reply || data.response || data.message || data.text || (typeof data === 'string' ? data : '')
+
+      if (botReply && data.action !== 'conversation_end') {
+        addMessage('bot', botReply)
+      }
+
+      // Auto-detect form intent if action is missing
+      const shouldShowForm = (data.action === 'render_form' || data.action === 'show_form') || 
+                             (botReply && (botReply.toLowerCase().includes('use the form below') || botReply.toLowerCase().includes('fill out the form')))
+
+      if (shouldShowForm) {
+        console.log('Rendering form with slots:', data.slots); // Debug log
+        
+        let parsedSlots = data.slots;
+        // Handle case where slots might be a JSON string
+        if (typeof data.slots === 'string') {
+          try {
+            parsedSlots = JSON.parse(data.slots);
+          } catch (e) {
+            console.error('Failed to parse slots string:', e);
+          }
+        }
+
+        // Normalize slots to an array
+        let finalSlots: TimeSlot[] = [];
+        
+        console.log('Parsing slots data:', parsedSlots);
+
+        if (Array.isArray(parsedSlots)) {
+           // Check if elements are wrapped in { slot: ... }
+           const firstItem = parsedSlots.length > 0 ? parsedSlots[0] as Record<string, unknown> : null;
+           if (firstItem && 'slot' in firstItem) {
+              finalSlots = parsedSlots.map((item) => {
+                 const record = item as Record<string, unknown>;
+                 const s = record.slot as Record<string, unknown>;
+                 if (s && (s.start || s.startTimeDisplay)) {
+                    return {
+                       value: (s.start as string) || (s.startTimeDisplay as string),
+                       label: `${s.startTimeDisplay || s.start} - ${s.endTimeDisplay || ''}`
+                    };
+                 }
+                 return item as TimeSlot;
+              });
+           } else {
+              finalSlots = parsedSlots as TimeSlot[];
+           }
+        } else if (typeof parsedSlots === 'object' && parsedSlots !== null) {
+          const asRecord = parsedSlots as Record<string, unknown>;
+          
+          // 1. Check for { slots: [...] } wrapper
+          if (Array.isArray(asRecord.slots)) {
+            finalSlots = asRecord.slots as TimeSlot[];
+          } 
+          // 2. Check for single slot with { value, label }
+          else if ('value' in asRecord && 'label' in asRecord) {
+            finalSlots = [parsedSlots as TimeSlot];
+          }
+          // 3. Check for single slot with { slot: { ... } } wrapper
+          else if ('slot' in asRecord && typeof asRecord.slot === 'object' && asRecord.slot !== null) {
+             console.log('Found single slot wrapper');
+             const s = asRecord.slot as Record<string, unknown>;
+             if (s.start || s.startTimeDisplay) {
+                finalSlots = [{
+                   value: (s.start as string) || (s.startTimeDisplay as string),
+                   label: `${s.startTimeDisplay || s.start} - ${s.endTimeDisplay || ''}`
+                }];
+                console.log('Extracted slot:', finalSlots);
+             }
+          }
+          // 4. Check for object map (n8n items) or mixed properties
+          else {
+             const values = Object.values(asRecord);
+             // Filter values that look like slots
+             const potentialSlots = values.filter(v => {
+                if (typeof v !== 'object' || v === null) return false;
+                const r = v as Record<string, unknown>;
+                // Check for direct slot { value, label }
+                if ('value' in r && 'label' in r) return true;
+                // Check for wrapped slot { slot: { ... } }
+                if ('slot' in r && typeof r.slot === 'object') return true;
+                return false;
+             });
+
+             if (potentialSlots.length > 0) {
+                finalSlots = potentialSlots.map(v => {
+                   const r = v as Record<string, unknown>;
+                   // Unwrap { slot: ... } if present
+                   if ('slot' in r && typeof r.slot === 'object') {
+                      const s = r.slot as Record<string, unknown>;
+                      return {
+                         value: (s.start as string) || (s.startTimeDisplay as string),
+                         label: `${s.startTimeDisplay || s.start} - ${s.endTimeDisplay || ''}`
+                      };
+                   }
+                   return v as TimeSlot;
+                });
+             }
+          }
+        }
+
+        const slots = (finalSlots.length > 0) 
+          ? finalSlots 
+          : [
+              { value: 'morning', label: 'Morning' },
+              { value: 'afternoon', label: 'Afternoon' },
+              { value: 'evening', label: 'Evening' }
+            ];
+        
+        console.log('Final slots used:', slots);
+
+        setFormState({
+          isVisible: true,
+          slots: slots,
+          initialMessage: botReply || "We're ready to schedule your call.",
+        })
+      }
+
+      if (data.action === 'conversation_end') {
+        setFormState({ isVisible: false, slots: [], initialMessage: '' })
+        if (botReply) {
+          addMessage('bot', botReply)
+        }
+      }
+
       return botReply
       
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error sending message to bot:', error)
-      const errorMessage = 'Sorry, I\'m having trouble connecting. Please try again.'
+      
+      // Provide more specific error messages
+      let errorMessage = 'Sorry, I\'m having trouble connecting. Please try again.'
+      
+      if (error instanceof Error) {
+        if (error.message?.includes('n8n workflow error')) {
+          // Show the n8n-specific error message directly
+          errorMessage = error.message.replace('n8n workflow error: ', '')
+        } else if (error.message?.includes('No Respond to Webhook node')) {
+          errorMessage = '⚠️ n8n Workflow Configuration Error: Your n8n workflow is missing a "Respond to Webhook" node. Please add one at the end of your workflow to return a response to the chatbot.'
+        } else if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError')) {
+          errorMessage = 'Network error: Could not reach the server. Please check your internet connection and try again.'
+        } else if (error.message?.includes('n8n webhook error')) {
+          // Extract the actual error from n8n
+          errorMessage = error.message.replace('n8n webhook error (', '⚠️ n8n Error: ').replace(/\): /, ' - ')
+        } else if (error.message) {
+          errorMessage = `Error: ${error.message}`
+        }
+      }
+      
       addMessage('bot', errorMessage)
       return errorMessage
     } finally {
       setIsLoading(false)
     }
-}
+  }
 
-// Optional: Function to reset conversation (start fresh)
-function resetConversation() {
-  localStorage.removeItem('chatbot_session_id')
-  // Clear your chat messages UI here
-}
-  function handleChatSubmit(e?: React.FormEvent) {
+  // Optional: Function to reset conversation (start fresh)
+  // function resetConversation() {
+  //   localStorage.removeItem(SESSION_STORAGE_KEY)
+  //   sessionIdRef.current = null
+  //   // Clear your chat messages UI here
+  // }
+
+  async function handleContactSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const form = e.currentTarget
+    const fd = new FormData(form)
+
+    const submission = {
+      name: (fd.get('name') || '').toString().trim(),
+      email: (fd.get('email') || '').toString().trim(),
+      message: (fd.get('message') || '').toString().trim(),
+    }
+
+    if (!submission.name || !submission.email || !submission.message) {
+      setFormStatus('error')
+      setFormStatusMessage('Please fill out all fields before submitting.')
+      return
+    }
+
+    setFormStatus('sending')
+    setFormStatusMessage('')
+
+    try {
+      const sessionId = ensureSessionId({ createIfMissing: true })
+      const payload = {
+        type: 'form_submit' as const,
+        chatInput: `Form submission from ${submission.name} (${submission.email}): ${submission.message}`,
+        formData: submission,
+        session_id: sessionId,
+      }
+
+      const response = await fetch('/api/chatbot', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+
+      const responseBody = await response.json().catch(() => ({}))
+
+      if (!response.ok || responseBody.error) {
+        const errorMessage = responseBody.message || responseBody.error || response.statusText
+        throw new Error(errorMessage)
+      }
+
+      setFormStatus('success')
+      setFormStatusMessage('Thanks! We received your request and will reach out soon.')
+      form.reset()
+    } catch (error: unknown) {
+      console.error('Error submitting contact form:', error)
+      setFormStatus('error')
+      const fallbackMsg = error instanceof Error ? `Submission failed: ${error.message}` : 'Submission failed. Please try again.'
+      setFormStatusMessage(fallbackMsg)
+    }
+  }
+
+  async function handleFormSubmission(formData: { name: string; email: string; phone?: string; preferred_time: string }) {
+    const sessionId = ensureSessionId({ createIfMissing: true })
+    const formPayload = {
+      type: 'form_submit' as const,
+      message: `Form submission for ${formData.name}.`,
+      formData,
+      ...formData,
+      session_id: sessionId,
+    }
+
+    await sendMessageToBot(formPayload)
+  }
+
+  function handleChatSubmit(e?: FormEvent<HTMLFormElement>) {
     if (e && typeof e.preventDefault === 'function') e.preventDefault()
 
     const v = inputRef.current?.value?.trim() ?? ''
@@ -223,7 +571,7 @@ function resetConversation() {
     // clear input in a try/catch in case refs are mocked or readonly
     try {
       if (inputRef.current) inputRef.current.value = ''
-    } catch (err) {
+    } catch {
       // ignore
     }
 
@@ -251,11 +599,11 @@ function resetConversation() {
               {isClient ? (dark ? 'Light' : 'Dark') : 'Theme'}
             </button>
 
-            <button onClick={() => setChatOpen(true)} className="bg-indigo-600 text-white px-4 py-1 rounded-md">Chat</button>
+            <button onClick={openChat} className="bg-indigo-600 text-white px-4 py-1 rounded-md">Chat</button>
           </nav>
 
           <div className="md:hidden flex items-center gap-3">
-            <button onClick={() => setChatOpen(true)} className="bg-indigo-600 text-white px-3 py-1 rounded-md">Chat</button>
+            <button onClick={openChat} className="bg-indigo-600 text-white px-3 py-1 rounded-md">Chat</button>
             <button onClick={() => setNavOpen(s => !s)} aria-label="Toggle menu" className="p-2">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="stroke-current"><path d="M4 6h16M4 12h16M4 18h16" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>
@@ -271,7 +619,7 @@ function resetConversation() {
               <a href="#contact">Contact</a>
               <div className="flex gap-2 pt-2">
                 <button onClick={toggleDark} className="px-3 py-1 rounded-md border" suppressHydrationWarning>{isClient ? (dark ? 'Light' : 'Dark') : 'Theme'}</button>
-                <button onClick={() => setChatOpen(true)} className="bg-indigo-600 text-white px-4 py-1 rounded-md">Chat</button>
+                <button onClick={openChat} className="bg-indigo-600 text-white px-4 py-1 rounded-md">Chat</button>
               </div>
             </div>
           </div>
@@ -287,7 +635,7 @@ function resetConversation() {
 
             <div className="mt-6 flex gap-4">
               <a href="#contact" className="bg-indigo-600 text-white px-6 py-3 rounded-md font-medium shadow">Get a demo</a>
-              <button onClick={() => setChatOpen(true)} className="px-6 py-3 rounded-md border">Try chatbot</button>
+              <button onClick={openChat} className="px-6 py-3 rounded-md border">Try chatbot</button>
             </div>
 
             <div className="mt-8 text-sm text-gray-500 dark:text-gray-400">Trusted by regional companies across fintech, real estate, and healthcare.</div>
@@ -299,8 +647,8 @@ function resetConversation() {
               <div className="text-xs text-gray-400">AISyncSo Assistant</div>
               <div className="mt-2 text-sm text-gray-700 dark:text-gray-200">Hi! Ask me about building a RAG chatbot, integrations, or pricing.</div>
               <div className="mt-4 flex gap-2">
-                <button onClick={() => void sendMessageToBot('How much does a basic chatbot cost?')} className="px-3 py-1 rounded border">Pricing</button>
-                <button onClick={() => void sendMessageToBot('Can you integrate with Dropbox and Pinecone?')} className="px-3 py-1 rounded border">Integrations</button>
+                <button onClick={() => { openChat(); void sendMessageToBot('How much does a basic chatbot cost?') }} className="px-3 py-1 rounded border">Pricing</button>
+                <button onClick={() => { openChat(); void sendMessageToBot('Can you integrate with Dropbox and Pinecone?') }} className="px-3 py-1 rounded border">Integrations</button>
               </div>
             </div>
           </div>
@@ -348,7 +696,7 @@ function resetConversation() {
           <h2 className="text-2xl font-semibold">Contact</h2>
           <p className="mt-2 text-gray-600 dark:text-gray-300">Interested in a demo or pilot? Drop your details below and we’ll reach out.</p>
 
-          <form onSubmit={(e) => { e.preventDefault(); alert('Thanks! This demo form won\'t send anywhere. Replace with a backend API.'); }} className="mt-4 grid sm:grid-cols-2 gap-4">
+          <form onSubmit={handleContactSubmit} className="mt-4 grid sm:grid-cols-2 gap-4">
             <input 
               id="contact-name"
               name="name"
@@ -373,7 +721,18 @@ function resetConversation() {
               placeholder="Tell us about your project" 
               rows={5}
             ></textarea>
-            <button type="submit" className="bg-indigo-600 text-white px-6 py-3 rounded-md sm:col-span-2">Request demo</button>
+            <button 
+              type="submit" 
+              className="bg-indigo-600 text-white px-6 py-3 rounded-md sm:col-span-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              disabled={formStatus === 'sending'}
+            >
+              {formStatus === 'sending' ? 'Sending...' : 'Request demo'}
+            </button>
+            {formStatusMessage && (
+              <p className={`text-sm sm:col-span-2 ${formStatus === 'error' ? 'text-red-600' : 'text-green-600'}`}>
+                {formStatusMessage}
+              </p>
+            )}
           </form>
         </section>
 
@@ -402,13 +761,18 @@ function resetConversation() {
                     </div>
                   </div>
                 ))}
+                {formState.isVisible && (
+                  <div className="max-w-[85%]">
+                    <SchedulingForm slots={formState.slots} onFormSubmit={handleFormSubmission} initialMessage={formState.initialMessage} />
+                  </div>
+                )}
                 {isLoading && (
                   <div className="max-w-[85%]">
                     <div className="inline-block p-2 rounded-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border">
                       <span className="inline-flex items-center gap-1">
-                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
+                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce animation-delay-150"></span>
+                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce animation-delay-300"></span>
                       </span>
                     </div>
                   </div>
@@ -440,7 +804,7 @@ function resetConversation() {
         )}
 
         {!chatOpen && (
-          <button onClick={() => setChatOpen(true)} aria-label="Open chat" className="bg-indigo-600 text-white p-3 rounded-full shadow-lg">Chat</button>
+          <button onClick={openChat} aria-label="Open chat" className="bg-indigo-600 text-white p-3 rounded-full shadow-lg">Chat</button>
         )}
       </div>
     </div>
