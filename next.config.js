@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Removed 'output: export' to enable API routes for webhook proxy
-  // If you need static export, you can use: output: process.env.NODE_ENV === 'production' ? 'export' : undefined
-  output: 'export',
+  // Do not force static export here — API routes require a server runtime.
+  // If you intentionally want a static export for a specific build, set
+  // `output: 'export'` only for that workflow or use an environment flag.
   images: {
     unoptimized: true,
   },
