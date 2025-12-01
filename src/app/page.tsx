@@ -584,14 +584,14 @@ export default function Home() {
       <header className="sticky top-0 z-40 backdrop-blur bg-white/60 dark:bg-gray-900/60 border-b dark:border-gray-800">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="font-semibold text-xl">AISyncSo</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400 hidden sm:block">AI Innovation Studio · Marketing + RAG</div>
+            <div className="font-semibold text-xl">🟩 Money Expo Qatar</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 hidden sm:block">AI Support Assistant Demo</div>
           </div>
 
           <nav className="hidden md:flex items-center gap-6">
             <a href="#about" className="hover:underline">About</a>
-            <a href="#services" className="hover:underline">Services</a>
-            <a href="#projects" className="hover:underline">Projects</a>
+            <a href="#services" className="hover:underline">Features</a>
+            <a href="#projects" className="hover:underline">Why It Stands Out</a>
             <a href="#contact" className="hover:underline">Contact</a>
 
             {/* Avoid rendering dynamic theme label until we are on client to prevent hydration mismatch */}
@@ -614,8 +614,8 @@ export default function Home() {
           <div className="md:hidden border-t border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80">
             <div className="px-6 py-4 flex flex-col gap-3">
               <a href="#about">About</a>
-              <a href="#services">Services</a>
-              <a href="#projects">Projects</a>
+              <a href="#services">Features</a>
+              <a href="#projects">Why It Stands Out</a>
               <a href="#contact">Contact</a>
               <div className="flex gap-2 pt-2">
                 <button onClick={toggleDark} className="px-3 py-1 rounded-md border" suppressHydrationWarning>{isClient ? (dark ? 'Light' : 'Dark') : 'Theme'}</button>
@@ -630,25 +630,26 @@ export default function Home() {
         {/* Hero */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div>
-            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">AISyncSo — sync your data, brand & workflows into one intelligent assistant</h1>
-            <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">We build RAG-powered chatbots and AI experiences for customer support, lead gen, and internal workflows — tuned for the MENA market.</p>
+            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">🟩 Money Expo Qatar — AI Support Assistant Demo</h1>
+            <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">Your gateway to experiencing how a world-class Forex Brokerage handles client support using enterprise-grade AI.</p>
 
             <div className="mt-6 flex gap-4">
-              <a href="#contact" className="bg-indigo-600 text-white px-6 py-3 rounded-md font-medium shadow">Get a demo</a>
-              <button onClick={openChat} className="px-6 py-3 rounded-md border">Try chatbot</button>
+              <button onClick={openChat} className="bg-indigo-600 text-white px-6 py-3 rounded-md font-medium shadow">Try AI Assistant</button>
+              <a href="#about" className="px-6 py-3 rounded-md border">Learn More</a>
             </div>
 
-            <div className="mt-8 text-sm text-gray-500 dark:text-gray-400">Trusted by regional companies across fintech, real estate, and healthcare.</div>
+            <div className="mt-8 text-sm text-gray-500 dark:text-gray-400">Experience broker-grade AI support — 24/7, multilingual, compliance-first.</div>
           </div>
 
           <div className="rounded-xl p-6 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border shadow-sm">
-            <div className="text-sm text-gray-500 dark:text-gray-400">Live demo — minimal simulated chat</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">Live AI Assistant Demo</div>
             <div className="mt-4 border rounded-md p-4 bg-white dark:bg-gray-800">
-              <div className="text-xs text-gray-400">AISyncSo Assistant</div>
-              <div className="mt-2 text-sm text-gray-700 dark:text-gray-200">Hi! Ask me about building a RAG chatbot, integrations, or pricing.</div>
-              <div className="mt-4 flex gap-2">
-                <button onClick={() => { openChat(); void sendMessageToBot('How much does a basic chatbot cost?') }} className="px-3 py-1 rounded border">Pricing</button>
-                <button onClick={() => { openChat(); void sendMessageToBot('Can you integrate with Dropbox and Pinecone?') }} className="px-3 py-1 rounded border">Integrations</button>
+              <div className="text-xs text-gray-400">🧠 Senior Client Support AI</div>
+              <div className="mt-2 text-sm text-gray-700 dark:text-gray-200">Hi! I can help with account opening, trading conditions, platform guidance, compliance, and more. Ask me anything!</div>
+              <div className="mt-4 flex gap-2 flex-wrap">
+                <button onClick={() => { openChat(); void sendMessageToBot('What\'s your maximum leverage for Gold?') }} className="px-3 py-1 rounded border text-xs">Trading Conditions</button>
+                <button onClick={() => { openChat(); void sendMessageToBot('How do I open an account?') }} className="px-3 py-1 rounded border text-xs">Account Opening</button>
+                <button onClick={() => { openChat(); void sendMessageToBot('Tell me about VIP accounts') }} className="px-3 py-1 rounded border text-xs">VIP Services</button>
               </div>
             </div>
           </div>
@@ -656,39 +657,146 @@ export default function Home() {
 
         {/* About */}
         <section id="about" className="mt-20">
-          <h2 className="text-2xl font-semibold">About AISyncSo</h2>
-          <p className="mt-3 text-gray-600 dark:text-gray-300">AISyncSo is an AI innovation studio that builds custom, data-trained chatbots powered by Retrieval-Augmented Generation (RAG). We help businesses automate customer interaction, lead generation, and internal support by synchronizing their data, brand voice and workflows into a single intelligent assistant.</p>
+          <h2 className="text-2xl font-semibold">🧠 Meet Your Senior Client Support AI</h2>
+          <p className="mt-3 text-gray-600 dark:text-gray-300">A high-precision assistant built to mirror the service level of top-tier financial institutions.</p>
+          <p className="mt-3 text-gray-600 dark:text-gray-300">Designed specifically for Money Expo Qatar, this AI showcases how brokerage clients can receive fast, compliant, and multilingual support — 24/7.</p>
         </section>
 
-        {/* Services */}
-        <section id="services" className="mt-14 grid md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
-            <h3 className="font-semibold">RAG Chatbots</h3>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Custom retrieval pipelines, knowledge sync, and conversational UX tuned to your brand.</p>
+        {/* What This AI Does */}
+        <section id="services" className="mt-14">
+          <h2 className="text-2xl font-semibold mb-6">🎯 What This AI Does</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">This assistant helps visitors with:</p>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
+              <h3 className="font-semibold">Account Opening</h3>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Questions about account setup, requirements, and verification procedures.</p>
+            </div>
+            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
+              <h3 className="font-semibold">Trading Conditions</h3>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Product specifications, leverage, spreads, and trading parameters.</p>
+            </div>
+            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
+              <h3 className="font-semibold">Platform Guidance</h3>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">MT4/MT5/Web platform support and navigation assistance.</p>
+            </div>
+            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
+              <h3 className="font-semibold">Compliance & Funding</h3>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Verification procedures, funding methods, and regulatory compliance.</p>
+            </div>
+            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border md:col-span-2">
+              <h3 className="font-semibold">VIP & Institutional</h3>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Onboarding inquiries for VIP accounts and institutional clients.</p>
+            </div>
           </div>
-          <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
-            <h3 className="font-semibold">AI Automation</h3>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Automate lead qualification, internal tickets, and repetitive tasks using AI + workflows.</p>
-          </div>
-          <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
-            <h3 className="font-semibold">Consulting & Integration</h3>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">From architecture to deployment — Pinecone, vector DBs, Dropbox, n8n and cloud integrations.</p>
+          <p className="mt-6 text-gray-600 dark:text-gray-300 font-medium">Always professional. Always accurate. Always compliant.</p>
+        </section>
+
+        {/* How It Works */}
+        <section className="mt-14">
+          <h2 className="text-2xl font-semibold mb-6">🔍 How It Works (RAG Engine)</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">Powered by Retrieval-Augmented Generation (RAG), the AI answers using your official brokerage documents only — no outside assumptions, no guesswork.</p>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">It follows strict internal rules:</p>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
+              <h3 className="font-semibold">✔ 1. Context-Only Answers</h3>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Every reply is based 100% on the uploaded reference documents. If a detail doesn't exist, it clearly states it doesn't have that information.</p>
+            </div>
+            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
+              <h3 className="font-semibold">✔ 2. Zero Hallucination Policy</h3>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Nothing invented. Nothing approximated. Every number, fee, and condition is traceable back to your documents.</p>
+            </div>
+            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
+              <h3 className="font-semibold">✔ 3. Embedded Citations</h3>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Facts such as leverage, spreads, funding details, or product specs include internal source referencing (e.g., section or page number).</p>
+            </div>
           </div>
         </section>
 
-        {/* Projects */}
+        {/* Compliance */}
+        <section className="mt-14">
+          <h2 className="text-2xl font-semibold mb-6">🏦 Compliance-First Architecture</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">Built to match the regulatory expectations of global brokers:</p>
+          <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 mb-6">
+            <li>No financial advice, ever</li>
+            <li>No trade recommendations</li>
+            <li>No predictions</li>
+            <li>No requests for passwords or sensitive information</li>
+          </ul>
+          <div className="p-4 rounded-lg bg-gray-100 dark:bg-gray-800 border-l-4 border-indigo-600">
+            <p className="text-sm text-gray-700 dark:text-gray-300 italic">"I cannot provide investment advice. I can only assist with platform mechanics and account specifications."</p>
+          </div>
+        </section>
+
+        {/* Multilingual */}
+        <section className="mt-14">
+          <h2 className="text-2xl font-semibold mb-6">🌍 Multilingual Experience</h2>
+          <p className="text-gray-600 dark:text-gray-300">The assistant automatically responds in the user's language:</p>
+          <div className="mt-4 grid md:grid-cols-2 gap-4">
+            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
+              <h3 className="font-semibold">Professional English</h3>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">High-standard communication for international clients.</p>
+            </div>
+            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
+              <h3 className="font-semibold">High-Standard Arabic</h3>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Perfect for GCC clients and Expo environments where visitors switch languages quickly.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Lead Capture */}
+        <section className="mt-14">
+          <h2 className="text-2xl font-semibold mb-6">🎁 Lead Capture Behavior</h2>
+          <p className="text-gray-600 dark:text-gray-300">When a user expresses serious interest or asks advanced questions (VIP, institutional, liquidity, etc.), the AI follows up with:</p>
+          <div className="mt-4 p-4 rounded-lg bg-gray-100 dark:bg-gray-800 border-l-4 border-green-600">
+            <p className="text-sm text-gray-700 dark:text-gray-300 italic">"For this specific requirement, I recommend a quick call with our dedicated account manager. Shall I note your email?"</p>
+          </div>
+          <p className="mt-4 text-gray-600 dark:text-gray-300">Smart. Subtle. Conversion-oriented.</p>
+        </section>
+
+        {/* Sample Interaction */}
+        <section className="mt-14">
+          <h2 className="text-2xl font-semibold mb-6">💬 Sample Interaction</h2>
+          <div className="space-y-4">
+            <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+              <p className="text-sm font-semibold text-blue-900 dark:text-blue-200 mb-2">User:</p>
+              <p className="text-gray-700 dark:text-gray-300">"What's your maximum leverage for Gold?"</p>
+            </div>
+            <div className="p-4 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700">
+              <p className="text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2">AI Response:</p>
+              <p className="text-gray-700 dark:text-gray-300">"According to our Account Specifications (Section 3.2), the maximum leverage for XAU/USD is 1:100 for Standard accounts and 1:200 for VIP accounts."</p>
+            </div>
+            <p className="text-sm text-gray-500 dark:text-gray-400 italic">Clean, precise, compliant.</p>
+          </div>
+        </section>
+
+        {/* Why This Demo Stands Out */}
         <section id="projects" className="mt-14">
-          <h2 className="text-2xl font-semibold">Projects</h2>
-          <div className="mt-6 grid sm:grid-cols-2 gap-4">
-            <article className="p-4 rounded border bg-white dark:bg-gray-800">
-              <h4 className="font-semibold">Healthcare support bot</h4>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Reduced average response time by 60% and automated appointment booking flows.</p>
-            </article>
-            <article className="p-4 rounded border bg-white dark:bg-gray-800">
-              <h4 className="font-semibold">Real estate lead gen</h4>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Deployed multilingual RAG assistant for listing Q&A and booking viewings.</p>
-            </article>
+          <h2 className="text-2xl font-semibold mb-6">🚀 Why This Demo Stands Out</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">This isn't a generic chatbot.</p>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">It's a broker-grade AI built to:</p>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-4 rounded border bg-white dark:bg-gray-800">
+              <h4 className="font-semibold">Impress Investors</h4>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Showcase enterprise-grade AI capabilities that match top-tier financial institutions.</p>
+            </div>
+            <div className="p-4 rounded border bg-white dark:bg-gray-800">
+              <h4 className="font-semibold">Demonstrate Compliance</h4>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Prove regulatory readiness with built-in compliance-first architecture.</p>
+            </div>
+            <div className="p-4 rounded border bg-white dark:bg-gray-800">
+              <h4 className="font-semibold">Showcase AI Automation</h4>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Display how AI can handle complex support workflows 24/7.</p>
+            </div>
+            <div className="p-4 rounded border bg-white dark:bg-gray-800">
+              <h4 className="font-semibold">Improve Conversion</h4>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Smart lead capture that seamlessly transitions qualified prospects to human agents.</p>
+            </div>
+            <div className="p-4 rounded border bg-white dark:bg-gray-800 md:col-span-2">
+              <h4 className="font-semibold">Reduce Support Load</h4>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Handle routine inquiries automatically, freeing human agents for complex cases.</p>
+            </div>
           </div>
+          <p className="mt-6 text-gray-600 dark:text-gray-300 font-medium">All while staying fast, accurate, and Expo-ready.</p>
         </section>
 
         {/* Contact */}
@@ -736,7 +844,7 @@ export default function Home() {
           </form>
         </section>
 
-        <footer className="mt-20 border-t pt-6 text-sm text-gray-500 dark:text-gray-400">© 2024 AISyncSo — AI Innovation Studio. Built for MENA · English & Arabic support.</footer>
+        <footer className="mt-20 border-t pt-6 text-sm text-gray-500 dark:text-gray-400">© 2024 Money Expo Qatar — AI Support Assistant Demo. Enterprise-grade AI for Forex Brokerage.</footer>
       </main>
 
       {/* Chat drawer */}
@@ -744,7 +852,7 @@ export default function Home() {
         {chatOpen && (
           <div className="w-96 max-w-full shadow-2xl rounded-xl overflow-hidden border bg-white dark:bg-gray-800">
             <div className="px-4 py-3 flex items-center justify-between border-b dark:border-gray-700">
-              <div className="font-semibold">AISyncSo Assistant</div>
+              <div className="font-semibold">🧠 Senior Client Support AI</div>
               <div className="flex gap-2 items-center">
                 <button onClick={() => { setMessages([]) }} title="clear" className="text-xs px-2 py-1 border rounded">Clear</button>
                 <button onClick={() => setChatOpen(false)} className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700">Close</button>
@@ -752,7 +860,7 @@ export default function Home() {
             </div>
 
             <div ref={chatScrollRef} className="p-4 h-64 overflow-y-auto bg-gray-50 dark:bg-gray-900" id="chat-scroll">
-              {messages.length === 0 && <div className="text-sm text-gray-500">Say hi — ask about RAG, integrations or pricing.</div>}
+              {messages.length === 0 && <div className="text-sm text-gray-500">Hi! I can help with account opening, trading conditions, platform guidance, compliance, and more. Ask me anything!</div>}
               <div className="flex flex-col gap-3 mt-2">
                 {messages.map(m => (
                   <div key={m.id} className={`max-w-[85%] ${m.from === 'user' ? 'ml-auto text-right' : ''}`}>

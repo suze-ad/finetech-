@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AISyncSo — AI Innovation Studio",
-  description: "AISyncSo builds custom data-trained chatbots and AI experiences for SMEs across MENA.",
+  title: "Money Expo Qatar — AI Support Assistant Demo",
+  description: "Your gateway to experiencing how a world-class Forex Brokerage handles client support using enterprise-grade AI.",
 };
 
 export default function RootLayout({
