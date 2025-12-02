@@ -55,7 +55,7 @@ function SchedulingForm({ slots, onFormSubmit, initialMessage }: SchedulingFormP
           placeholder="Full Name"
           value={formData.name}
           onChange={handleInputChange}
-          className="w-full p-2 border border-gray-180 rounded-lg focus:ring-[#04858A] focus:border-[#04858A] sans-serif"
+          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-[#04858A] focus:border-[#04858A] sans-serif"
           required
         />
         <input
@@ -64,7 +64,7 @@ function SchedulingForm({ slots, onFormSubmit, initialMessage }: SchedulingFormP
           placeholder="Email Address"
           value={formData.email}
           onChange={handleInputChange}
-          className="w-full p-2 border border-gray-180 rounded-lg focus:ring-[#04858A] focus:border-[#04858A] sans-serif"
+          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-[#04858A] focus:border-[#04858A] sans-serif"
           required
         />
         <PhoneInputField
@@ -74,7 +74,7 @@ function SchedulingForm({ slots, onFormSubmit, initialMessage }: SchedulingFormP
           name="preferred_time"
           value={formData.preferred_time}
           onChange={handleInputChange}
-          className="w-full p-2 border border-gray-180 rounded-lg bg-[#181819] focus:ring-[#04858A] focus:border-[#04858A] sans-serif"
+          className="w-full p-2 border border-gray-300 rounded-lg bg-[#181819] focus:ring-[#04858A] focus:border-[#04858A] sans-serif"
           required
           aria-label="Preferred meeting time"
         >
@@ -467,21 +467,6 @@ export default function Home() {
       // Provide more specific error messages
       let errorMessage = 'Sorry, I\'m having trouble connecting. Please try again.'
       
-      if (error instanceof Error) {
-        if (error.message?.includes('n8n workflow error')) {
-          // Show the n8n-specific error message directly
-          errorMessage = error.message.replace('n8n workflow error: ', '')
-        } else if (error.message?.includes('No Respond to Webhook node')) {
-          errorMessage = '⚠️ n8n Workflow Configuration Error: Your n8n workflow is missing a "Respond to Webhook" node. Please add one at the end of your workflow to return a response to the chatbot.'
-        } else if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError')) {
-          errorMessage = 'Network error: Could not reach the server. Please check your internet connection and try again.'
-        } else if (error.message?.includes('n8n webhook error')) {
-          // Extract the actual error from n8n
-          errorMessage = error.message.replace('n8n webhook error (', '⚠️ n8n Error: ').replace(/\): /, ' - ')
-        } else if (error.message) {
-          errorMessage = `Error: ${error.message}`
-        }
-      }
       
       addMessage('bot', errorMessage)
       return errorMessage
@@ -665,7 +650,7 @@ export default function Home() {
               <h3 style={{ margin: '0 0 12px 0', fontSize: '15px', color: '#333', display: 'flex', alignItems: 'center' }}>📋 Tap a question to copy:</h3>
 
               <div style={{ marginBottom: '10px' }}>
-                <span style={{ fontSize: '11px', color: '#666', marginBottom: '4px', display: 'block', fontWeight: 600 }}>TEST 1: PRECISION</span>
+                <span style={{ fontSize: '11px', color: '#666', marginBottom: '4px', display: 'block', fontWeight: 300 }}>TEST 1: PRECISION</span>
                 <div
                   onClick={(e) => copyToClipboard(e.currentTarget, 'What is the max leverage for Gold accounts?')}
                   style={{
@@ -689,7 +674,7 @@ export default function Home() {
               </div>
 
               <div style={{ marginBottom: '10px' }}>
-                <span style={{ fontSize: '11px', color: '#666', marginBottom: '4px', display: 'block', fontWeight: 600 }}>TEST 2: COMPLIANCE SAFETY</span>
+                <span style={{ fontSize: '11px', color: '#666', marginBottom: '4px', display: 'block', fontWeight: 300 }}>TEST 2: COMPLIANCE SAFETY</span>
                 <div
                   onClick={(e) => copyToClipboard(e.currentTarget, 'Which stock should I buy to double my money?')}
                   style={{
@@ -713,7 +698,7 @@ export default function Home() {
               </div>
 
               <div style={{ marginBottom: '10px' }}>
-                <span style={{ fontSize: '11px', color: '#666', marginBottom: '4px', display: 'block', fontWeight: 600 }}>TEST 3: ARABIC (العربية)</span>
+                <span style={{ fontSize: '11px', color: '#666', marginBottom: '4px', display: 'block', fontWeight: 300 }}>TEST 3: ARABIC (العربية)</span>
                 <div
                   onClick={(e) => copyToClipboard(e.currentTarget, 'ما هي شروط فتح الحساب؟')}
                   style={{
@@ -771,7 +756,8 @@ export default function Home() {
             <div style={{ marginTop: '25px', fontSize: '11px', color: '#999', lineHeight: 1.4 }}>
               <strong>Aisyncso @ Money Expo Qatar</strong><br />
               We turn your documents into intelligent agents.<br />
-              Visit our booth for a custom POC.
+              Visit our website  <a href='https://aisyncso.com'
+              target='_blank' rel='noopener noreferrer'>Link</a>.
             </div>
           </div>
         </div>
@@ -780,7 +766,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#9A9A9A] text-gray-900 dark:text-gray-100 transition-colors duration-200">
+    <div className="min-h-screen bg-[#ffffff] text-gray-900 dark:text-gray-100 transition-colors duration-200">
 
       <header className="sticky top-0 z-40 backdrop-blur bg-white/60 dark:bg-[#181819]/60 border-b dark:border-[#181819]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
@@ -857,16 +843,16 @@ export default function Home() {
           <p className="mt-3 sm:mt-4 text-sm sm:text-base text-black">Apex is committed to guiding, supporting, and equipping you with the clarity and confidence you need to trade effectively. Your success begins with the right level of support — and that is exactly what we deliver.</p>
           <div className="mt-4 sm:mt-6 grid sm:grid-cols-2 gap-3 sm:gap-4">
             <div className="p-3 sm:p-4 rounded-lg bg-white dark:bg-[#181819] border">
-              <p className="text-sm sm:text-base text-gray-700 dark:text-gray-180">Individuals opening their first trading account</p>
+              <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300">Individuals opening their first trading account</p>
             </div>
             <div className="p-3 sm:p-4 rounded-lg bg-white dark:bg-[#181819] border">
-              <p className="text-sm sm:text-base text-gray-700 dark:text-gray-180">Traders transitioning to improved trading conditions</p>
+              <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300">Traders transitioning to improved trading conditions</p>
             </div>
             <div className="p-3 sm:p-4 rounded-lg bg-white dark:bg-[#181819] border">
-              <p className="text-sm sm:text-base text-gray-700 dark:text-gray-180">Professional clients seeking structured compliance assistance</p>
+              <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300">Professional clients seeking structured compliance assistance</p>
             </div>
             <div className="p-3 sm:p-4 rounded-lg bg-white dark:bg-[#181819] border">
-              <p className="text-sm sm:text-base text-gray-700 dark:text-gray-180">Anyone requiring a refined, responsive, high-trust brokerage support partner</p>
+              <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300">Anyone requiring a refined, responsive, high-trust brokerage support partner</p>
             </div>
           </div>
         </section>
@@ -877,15 +863,15 @@ export default function Home() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#181819] border border-[#04858A]/20">
               <h3 className="font-light text-base sm:text-lg mb-2 sm:mb-3 text-[#04858A]">Account Opening Made Simple</h3>
-              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-180">We guide clients through every stage of the account-opening process, including selection of the appropriate account type, document submission, and verification. The process is streamlined, secure, and designed to eliminate unnecessary delays.</p>
+              <p className="text-xs sm:text-sm text-gray-300 dark:text-gray-300">We guide clients through every stage of the account-opening process, including selection of the appropriate account type, document submission, and verification. The process is streamlined, secure, and designed to eliminate unnecessary delays.</p>
             </div>
             <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#181819] border border-[#04858A]/20">
               <h3 className="font-light text-base sm:text-lg mb-2 sm:mb-3 text-[#04858A]">Clear Trading Conditions</h3>
-              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-180">We provide transparent explanations of spreads, leverage, trading instruments, and margin requirements. Our goal is to ensure every client understands the full scope of their trading environment before entering the market.</p>
+              <p className="text-xs sm:text-sm text-gray-300 dark:text-gray-300">We provide transparent explanations of spreads, leverage, trading instruments, and margin requirements. Our goal is to ensure every client understands the full scope of their trading environment before entering the market.</p>
             </div>
             <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#181819] border border-[#04858A]/20 sm:col-span-2 lg:col-span-1">
               <h3 className="font-light text-base sm:text-lg mb-2 sm:mb-3 text-[#04858A]">Reliable Compliance Support</h3>
-              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-180">From regulatory requirements to document validation, our team ensures each client meets all compliance standards accurately and efficiently. We prioritize precision, clarity, and proper handling of all compliance-related steps.</p>
+              <p className="text-xs sm:text-sm text-gray-300 dark:text-gray-300">From regulatory requirements to document validation, our team ensures each client meets all compliance standards accurately and efficiently. We prioritize precision, clarity, and proper handling of all compliance-related steps.</p>
             </div>
           </div>
         </section>
@@ -904,19 +890,19 @@ export default function Home() {
           <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
             <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#181819] border border-[#04858A]/20">
               <h4 className="font-light text-base sm:text-lg mb-2 sm:mb-3 text-[#04858A]">High-End Service</h4>
-              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-180">We deliver premium support tailored to the expectations of serious traders seeking reliability and clarity.</p>
+              <p className="text-xs sm:text-sm text-gray-300 dark:text-gray-300">We deliver premium support tailored to the expectations of serious traders seeking reliability and clarity.</p>
             </div>
             <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#181819] border border-[#04858A]/20">
               <h4 className="font-light text-base sm:text-lg mb-2 sm:mb-3 text-[#04858A]">Fast Response</h4>
-              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-180">Our support structure ensures quick, accurate responses without unnecessary delays or repetitive steps.</p>
+              <p className="text-xs sm:text-sm text-gray-300 dark:text-gray-300">Our support structure ensures quick, accurate responses without unnecessary delays or repetitive steps.</p>
             </div>
             <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#181819] border border-[#04858A]/20">
               <h4 className="font-light text-base sm:text-lg mb-2 sm:mb-3 text-[#04858A]">Expert Guidance</h4>
-              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-180">With deep market knowledge and brokerage experience, our team provides informed support that traders can trust.</p>
+              <p className="text-xs sm:text-sm text-gray-300 dark:text-gray-300">With deep market knowledge and brokerage experience, our team provides informed support that traders can trust.</p>
             </div>
             <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#181819] border border-[#04858A]/20">
               <h4 className="font-light text-base sm:text-lg mb-2 sm:mb-3 text-[#04858A]">Client-First Approach</h4>
-              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-180">We operate with transparency, professionalism, and a commitment to simplifying complex processes.</p>
+              <p className="text-xs sm:text-sm text-gray-300 dark:text-gray-300">We operate with transparency, professionalism, and a commitment to simplifying complex processes.</p>
             </div>
           </div>
         </section>
@@ -925,8 +911,8 @@ export default function Home() {
         <section className="mt-10 sm:mt-14">
           <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#181819] border border-[#04858A]/20">
             <h2 className="text-lg sm:text-xl font-light mb-3 sm:mb-4 text-[#04858A]">Brand Integration (Aisyncso)</h2>
-            <h3 className="font-light mb-2 text-sm sm:text-base text-gray-700 dark:text-gray-180">Aisyncso — AI Automation & RAG Chatbots</h3>
-            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-180">This website and support flow can be fully enhanced with Aisyncso's automation systems, including AI-driven client handling, compliance assistance, and intelligent onboarding tools.</p>
+            <h3 className="font-light mb-2 text-sm sm:text-base text-gray-700 dark:text-gray-300">Aisyncso — AI Automation & RAG Chatbots</h3>
+            <p className="text-xs sm:text-sm text-gray-300 dark:text-gray-300">This website and support flow can be fully enhanced with Aisyncso's automation systems, including AI-driven client handling, compliance assistance, and intelligent onboarding tools.</p>
           </div>
         </section>
 
@@ -960,18 +946,15 @@ export default function Home() {
               placeholder="Tell us about your project" 
               rows={4}
             ></textarea>
-            <button
-              type="submit"
+            <button 
+              type="submit" 
               className="bg-[#04858A] text-white px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base rounded-md sm:col-span-2 disabled:opacity-60 disabled:cursor-not-allowed hover:bg-[#037075] transition-colors"
               disabled={formStatus === 'sending'}
-              formAction="mailto:hello@aisyncso.com"
-              formMethod="post"
-              formEncType="text/plain"
             >
               {formStatus === 'sending' ? 'Sending...' : 'Get Started'}
             </button>
             {formStatusMessage && (
-              <p className={`text-sm sm:col-span-2 ${formStatus === 'error' ? 'text-red-600' : 'text-[#04858A]'}`}>
+              <p className={`text-sm sm:col-span-2 ${formStatus === 'error' ? 'text-red-300' : 'text-[#04858A]'}`}>
                 {formStatusMessage}
               </p>
             )}
@@ -982,7 +965,18 @@ export default function Home() {
       <footer className="w-full bg-[#0A0E27] text-white gap-5 sans-serif">
         <div className="w-full flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 px-4 sm:px-6 py-3 sm:py-4">
           <span className="text-xs sm:text-sm text-white flex flex-col md:flex-row items-center justify-center gap-2 md:gap-0 sans-serif">
-            <span className="text-center md:text-left">© 2025 Apex — Premium Brokerage Support, Redefined. Powered by</span>
+            <span className="text-center md:text-left">
+              © 2025 Apex — Premium Brokerage Support, Redefined. Powered by{" "}
+              <a
+                href="https://aisyncso.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+              >
+                Aisyncso
+              </a>
+              .
+            </span>
             <img
               src="/aisyncso-03.svg"
               alt="Aisyncso Logo"
@@ -1004,11 +998,11 @@ export default function Home() {
               </div>
             </div>
 
-            <div ref={chatScrollRef} className="p-4 flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900 chat-text" id="chat-scroll">
+            <div ref={chatScrollRef} className="p-4 flex-1 overflow-y-auto chat-text" id="chat-scroll">
               <div className="flex flex-col gap-3">
                 {messages.length === 0 && (
                   <div className="max-w-[85%]">
-                    <div className="inline-block p-2 rounded-md bg-white dark:bg-[#181819] text-gray-400 dark:text-gray-100 border chat-text">
+                    <div className="inline-block p-2 rounded-md bg-white  text-[#04858A]  border chat-text">
                       Welcome to Apex. We provide high-end Forex brokerage support designed to make account opening, trading conditions, and compliance simple, clear, and efficient. Your trading journey starts here—with guidance you can trust.
                     </div>
                   </div>

@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     
     // Helper function to send message to n8n webhook
     async function sendMessageToN8N({ chatInput, step, sessionId, type, formData }: N8NRequestPayload) {
-      const res = await fetch("https://syncso.app.n8n.cloud/webhook/chatbot", {
+      const res = await fetch("https://syncso.app.n8n.cloud/webhook/5eb7311a-c140-48e8-90b0-fef09f11473d", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

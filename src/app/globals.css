@@ -13,11 +13,11 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #a19696;
+  --foreground: #ffffff;
   --brand-primary: #04858A;
   --brand-secondary: #04858A;
   --brand-light: #FFFFFF;
-  --brand-dark: #4e4e57;
+  --brand-dark: #ffffff;
 }
 
 @theme inline {
@@ -66,7 +66,7 @@ p {
 .PhoneInputCountrySelectSelect {
   background-color: #fcfcfc;
   color: #fff;
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.905);
 }
 
 .PhoneInputCountrySelectSelect option {
