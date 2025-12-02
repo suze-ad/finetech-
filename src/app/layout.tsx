@@ -13,8 +13,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Money Expo Qatar — AI Support Assistant Demo",
-  description: "Your gateway to experiencing how a world-class Forex Brokerage handles client support using enterprise-grade AI.",
+  title: "Apex — Premium Brokerage Support, Redefined",
+  description: "Your Gateway to a Smarter Trading Experience",
+  icons: {
+    icon: "/aisyncso final logo-03.svg",
+  },
 };
 
 export default function RootLayout({

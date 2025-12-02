@@ -44,8 +44,10 @@ function SchedulingForm({ slots, onFormSubmit, initialMessage }: SchedulingFormP
   }
 
   return (
-    <div className="bg-[#101828] p-4 shadow-lg rounded-xl my-4 space-y-4 text-white">
-      <p className="text-sm font-semibold text-white">{submitMessage}</p>
+    <div className="bg-[#181819] p-4 shadow-lg rounded-xl my-4 space-y-4 text-white sans-serif">
+      <p className="text-sm text-white sans-serif">{submitMessage}</p>
+    
+
       <form onSubmit={handleSubmit} className="space-y-3">
         <input
           type="text"
@@ -53,7 +55,7 @@ function SchedulingForm({ slots, onFormSubmit, initialMessage }: SchedulingFormP
           placeholder="Full Name"
           value={formData.name}
           onChange={handleInputChange}
-          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+          className="w-full p-2 border border-gray-180 rounded-lg focus:ring-[#04858A] focus:border-[#04858A] sans-serif"
           required
         />
         <input
@@ -62,7 +64,7 @@ function SchedulingForm({ slots, onFormSubmit, initialMessage }: SchedulingFormP
           placeholder="Email Address"
           value={formData.email}
           onChange={handleInputChange}
-          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+          className="w-full p-2 border border-gray-180 rounded-lg focus:ring-[#04858A] focus:border-[#04858A] sans-serif"
           required
         />
         <PhoneInputField
@@ -72,7 +74,7 @@ function SchedulingForm({ slots, onFormSubmit, initialMessage }: SchedulingFormP
           name="preferred_time"
           value={formData.preferred_time}
           onChange={handleInputChange}
-          className="w-full p-2 border border-gray-300 rounded-lg bg-[#101828] focus:ring-blue-500 focus:border-blue-500"
+          className="w-full p-2 border border-gray-180 rounded-lg bg-[#181819] focus:ring-[#04858A] focus:border-[#04858A] sans-serif"
           required
           aria-label="Preferred meeting time"
         >
@@ -86,7 +88,7 @@ function SchedulingForm({ slots, onFormSubmit, initialMessage }: SchedulingFormP
         <button
           type="submit"
           disabled={loading}
-          className={`w-full py-2 rounded-lg text-white font-bold transition duration-150 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 shadow-md'}`}
+          className={`w-full py-2 rounded-lg text-white transition duration-150 sans-serif ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#04858A] hover:bg-[#037075] shadow-md'}`}
         >
           {loading ? 'Booking...' : 'Confirm Meeting'}
         </button>
@@ -134,6 +136,7 @@ export default function Home() {
   const [dark, setDark] = useState<boolean>(false)
   const [navOpen, setNavOpen] = useState(false)
   const [chatOpen, setChatOpen] = useState(false)
+  const [showIntro, setShowIntro] = useState(true)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [formState, setFormState] = useState<{ isVisible: boolean; slots: TimeSlot[]; initialMessage: string }>({
@@ -578,32 +581,224 @@ export default function Home() {
     void sendMessageToBot(v)
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+  function copyToClipboard(element: HTMLElement, text: string) {
+    navigator.clipboard.writeText(text).then(() => {
+      const original = element.innerHTML
+      element.style.backgroundColor = "#d4edda"
+      element.style.borderColor = "#c3e6cb"
+      element.innerHTML = '<span style="color:#155724; font-weight:bold;">Copied! Ready to paste. ✅</span>'
 
-      <header className="sticky top-0 z-40 backdrop-blur bg-white/60 dark:bg-gray-900/60 border-b dark:border-gray-800">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="font-semibold text-xl">🟩 Money Expo Qatar</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400 hidden sm:block">AI Support Assistant Demo</div>
+      setTimeout(() => {
+        element.innerHTML = original
+        element.style.backgroundColor = "white"
+        element.style.borderColor = "#ddd"
+      }, 1500)
+    })
+  }
+
+  if (showIntro) {
+    return (
+      <div style={{
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+        backgroundColor: '#f0f2f5',
+        color: '#1a1a1a',
+        margin: 0,
+        padding: '20px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        textAlign: 'center',
+        minHeight: '100vh'
+      }}>
+        <div style={{
+          background: 'white',
+          padding: 0,
+          borderRadius: '16px',
+          boxShadow: '0 8px 20px rgba(0,0,0,0.08)',
+          maxWidth: '400px',
+          width: '100%',
+          overflow: 'hidden'
+        }}>
+          <div style={{ padding: '25px 20px 10px 20px' }}>
+            <h1 style={{ color: '#0056b3', margin: 0, fontSize: '26px', letterSpacing: '-0.5px' }}>Aisyncso</h1>
+            <div style={{ color: '#666', fontSize: '14px', marginTop: '5px' }}>AI Automation & RAG Chatbots</div>
           </div>
 
-          <nav className="hidden md:flex items-center gap-6">
-            <a href="#about" className="hover:underline">About</a>
-            <a href="#services" className="hover:underline">Features</a>
-            <a href="#projects" className="hover:underline">Why It Stands Out</a>
-            <a href="#contact" className="hover:underline">Contact</a>
+          <div style={{
+            backgroundColor: '#fff3cd',
+            color: '#856404',
+            padding: '15px 20px',
+            fontSize: '13px',
+            borderTop: '1px solid #ffeeba',
+            borderBottom: '1px solid #ffeeba',
+            textAlign: 'left'
+          }}>
+            <span style={{
+              backgroundColor: '#856404',
+              color: 'white',
+              padding: '2px 6px',
+              borderRadius: '4px',
+              fontSize: '10px',
+              textTransform: 'uppercase',
+              fontWeight: 'bold',
+              marginRight: '5px'
+            }}>SCENARIO</span>
+            <strong>Simulating "Apex Global Markets"</strong><br />
+            <span style={{ display: 'block', marginTop: '5px', opacity: 0.9 }}>
+              "Apex" is a <strong>fictional brokerage</strong> created to demonstrate our RAG technology. The AI will answer strictly based on the mock documents provided.
+            </span>
+          </div>
 
-            {/* Avoid rendering dynamic theme label until we are on client to prevent hydration mismatch */}
-            <button onClick={toggleDark} className="px-3 py-1 rounded-md border" suppressHydrationWarning>
-              {isClient ? (dark ? 'Light' : 'Dark') : 'Theme'}
+          <div style={{ padding: '20px' }}>
+            <p style={{ fontSize: '14px', marginBottom: '20px' }}>
+              <strong>The Goal:</strong> Try to trick the AI into giving an answer that isn't in the Apex policy documents.
+            </p>
+
+            <div style={{
+              backgroundColor: '#f8f9fa',
+              border: '1px solid #e9ecef',
+              borderRadius: '12px',
+              padding: '15px',
+              marginBottom: '20px',
+              textAlign: 'left'
+            }}>
+              <h3 style={{ margin: '0 0 12px 0', fontSize: '15px', color: '#333', display: 'flex', alignItems: 'center' }}>📋 Tap a question to copy:</h3>
+
+              <div style={{ marginBottom: '10px' }}>
+                <span style={{ fontSize: '11px', color: '#666', marginBottom: '4px', display: 'block', fontWeight: 600 }}>TEST 1: PRECISION</span>
+                <div
+                  onClick={(e) => copyToClipboard(e.currentTarget, 'What is the max leverage for Gold accounts?')}
+                  style={{
+                    fontSize: '13px',
+                    background: 'white',
+                    padding: '10px 12px',
+                    border: '1px solid #ddd',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    color: '#333',
+                    transition: 'all 0.2s',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+                  }}
+                >
+                  <span>"What is the max leverage for Gold accounts?"</span>
+                  <span style={{ fontSize: '14px', color: '#0056b3' }}>📋</span>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '10px' }}>
+                <span style={{ fontSize: '11px', color: '#666', marginBottom: '4px', display: 'block', fontWeight: 600 }}>TEST 2: COMPLIANCE SAFETY</span>
+                <div
+                  onClick={(e) => copyToClipboard(e.currentTarget, 'Which stock should I buy to double my money?')}
+                  style={{
+                    fontSize: '13px',
+                    background: 'white',
+                    padding: '10px 12px',
+                    border: '1px solid #ddd',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    color: '#333',
+                    transition: 'all 0.2s',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+                  }}
+                >
+                  <span>"Which stock should I buy to double my money?"</span>
+                  <span style={{ fontSize: '14px', color: '#0056b3' }}>📋</span>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '10px' }}>
+                <span style={{ fontSize: '11px', color: '#666', marginBottom: '4px', display: 'block', fontWeight: 600 }}>TEST 3: ARABIC (العربية)</span>
+                <div
+                  onClick={(e) => copyToClipboard(e.currentTarget, 'ما هي شروط فتح الحساب؟')}
+                  style={{
+                    fontSize: '13px',
+                    background: 'white',
+                    padding: '10px 12px',
+                    border: '1px solid #ddd',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    color: '#333',
+                    transition: 'all 0.2s',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+                  }}
+                >
+                  <span>"ما هي شروط فتح الحساب؟"</span>
+                  <span style={{ fontSize: '14px', color: '#0056b3' }}>📋</span>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                setShowIntro(false)
+                setChatOpen(true)
+                ensureSessionId({ createIfMissing: true })
+              }}
+              style={{
+                background: 'linear-gradient(135deg, #0056b3 0%, #004494 100%)',
+                color: 'white',
+                padding: '16px 20px',
+                textDecoration: 'none',
+                borderRadius: '12px',
+                fontWeight: 'bold',
+                fontSize: '18px',
+                display: 'block',
+                width: '100%',
+                border: 'none',
+                cursor: 'pointer',
+                boxShadow: '0 4px 10px rgba(0, 86, 179, 0.3)',
+                transition: 'transform 0.2s'
+              }}
+              onMouseDown={(e) => {
+                e.currentTarget.style.transform = 'translateY(2px)'
+              }}
+              onMouseUp={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)'
+              }}
+            >
+              Launch Demo Agent ➤
             </button>
 
-            <button onClick={openChat} className="bg-indigo-600 text-white px-4 py-1 rounded-md">Chat</button>
+            <div style={{ marginTop: '25px', fontSize: '11px', color: '#999', lineHeight: 1.4 }}>
+              <strong>Aisyncso @ Money Expo Qatar</strong><br />
+              We turn your documents into intelligent agents.<br />
+              Visit our booth for a custom POC.
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-[#9A9A9A] text-gray-900 dark:text-gray-100 transition-colors duration-200">
+
+      <header className="sticky top-0 z-40 backdrop-blur bg-white/60 dark:bg-[#181819]/60 border-b dark:border-[#181819]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="font-light text-lg sm:text-xl text-[#04858A]">Apex</div>
+            <div className="text-xs sm:text-sm text-gray dark:text-gray hidden sm:block">Premium Brokerage Support</div>
+          </div>
+
+          <nav className="hidden md:flex items-center gap-4 lg:gap-6">
+            <a href="#about" className="text-sm lg:text-base hover:underline">About</a>
+            <a href="#services" className="text-sm lg:text-base hover:underline">What We Do</a>
+            <a href="#projects" className="text-sm lg:text-base hover:underline">Why Apex</a>
+            <a href="#contact" className="text-sm lg:text-base hover:underline">Contact</a>
+            <button onClick={openChat} className="bg-[#04858A] text-white px-3 sm:px-4 py-1 text-sm sm:text-base rounded-md hover:bg-[#037075] transition-colors">Chat</button>
           </nav>
 
-          <div className="md:hidden flex items-center gap-3">
-            <button onClick={openChat} className="bg-indigo-600 text-white px-3 py-1 rounded-md">Chat</button>
+          <div className="md:hidden flex items-center gap-2 sm:gap-3">
+            <button onClick={openChat} className="bg-[#04858A] text-white px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-md hover:bg-[#037075] transition-colors">Chat</button>
             <button onClick={() => setNavOpen(s => !s)} aria-label="Toggle menu" className="p-2">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="stroke-current"><path d="M4 6h16M4 12h16M4 18h16" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>
@@ -611,206 +806,142 @@ export default function Home() {
         </div>
 
         {navOpen && (
-          <div className="md:hidden border-t border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80">
-            <div className="px-6 py-4 flex flex-col gap-3">
-              <a href="#about">About</a>
-              <a href="#services">Features</a>
-              <a href="#projects">Why It Stands Out</a>
-              <a href="#contact">Contact</a>
+          <div className="md:hidden border-t border-gray-200 dark:border-[#181819] bg-white/80 dark:bg-[#181819]/80">
+            <div className="px-4 sm:px-6 py-3 sm:py-4 flex flex-col gap-2 sm:gap-3">
+              <a href="#about" className="text-sm sm:text-base">About</a>
+              <a href="#services" className="text-sm sm:text-base">What We Do</a>
+              <a href="#projects" className="text-sm sm:text-base">Why Apex</a>
+              <a href="#contact" className="text-sm sm:text-base">Contact</a>
               <div className="flex gap-2 pt-2">
-                <button onClick={toggleDark} className="px-3 py-1 rounded-md border" suppressHydrationWarning>{isClient ? (dark ? 'Light' : 'Dark') : 'Theme'}</button>
-                <button onClick={openChat} className="bg-indigo-600 text-white px-4 py-1 rounded-md">Chat</button>
+                <button onClick={toggleDark} className="px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-md border" suppressHydrationWarning>{isClient ? (dark ? 'Light' : 'Dark') : 'Theme'}</button>
+                <button onClick={openChat} className="bg-[#04858A] text-white px-3 sm:px-4 py-1 text-xs sm:text-sm rounded-md hover:bg-[#037075] transition-colors">Chat</button>
               </div>
             </div>
           </div>
         )}
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-14">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 lg:py-14">
         {/* Hero */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 items-center">
           <div>
-            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">🟩 Money Expo Qatar — AI Support Assistant Demo</h1>
-            <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">Your gateway to experiencing how a world-class Forex Brokerage handles client support using enterprise-grade AI.</p>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light leading-tight text-[#04858A]">Apex — Premium Brokerage Support, Redefined</h1>
+            <p className="mt-3 sm:mt-4 text-base sm:text-lg text-black">Your Gateway to a Smarter Trading Experience</p>
+            <p className="mt-3 sm:mt-4 text-sm sm:text-base text-black">Apex serves as a high-end Forex brokerage support partner dedicated to simplifying your trading onboarding journey. We assist both new and experienced traders with account setup, clarity on trading conditions, and confident navigation of compliance requirements. Our approach is precise, structured, and client-focused, ensuring a seamless experience from the first interaction to full account readiness.</p>
 
-            <div className="mt-6 flex gap-4">
-              <button onClick={openChat} className="bg-indigo-600 text-white px-6 py-3 rounded-md font-medium shadow">Try AI Assistant</button>
-              <a href="#about" className="px-6 py-3 rounded-md border">Learn More</a>
+            <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <button onClick={openChat} className="bg-[#04858A] text-white px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base rounded-md shadow hover:bg-[#037075] transition-colors">Start Your Journey</button>
+              <a href="#about" className="px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base rounded-md border hover:bg-gray-50 dark:hover:bg-[#181819] transition-colors text-center">Learn More</a>
             </div>
 
-            <div className="mt-8 text-sm text-gray-500 dark:text-gray-400">Experience broker-grade AI support — 24/7, multilingual, compliance-first.</div>
+            <div className="mt-6 sm:mt-8 text-xs sm:text-sm text-gray-500 dark:text-gray-400">Apex focuses not just on answering questions, but on elevating your entire trading experience.</div>
           </div>
 
-          <div className="rounded-xl p-6 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border shadow-sm">
-            <div className="text-sm text-gray-500 dark:text-gray-400">Live AI Assistant Demo</div>
-            <div className="mt-4 border rounded-md p-4 bg-white dark:bg-gray-800">
-              <div className="text-xs text-gray-400">🧠 Senior Client Support AI</div>
-              <div className="mt-2 text-sm text-gray-700 dark:text-gray-200">Hi! I can help with account opening, trading conditions, platform guidance, compliance, and more. Ask me anything!</div>
-              <div className="mt-4 flex gap-2 flex-wrap">
-                <button onClick={() => { openChat(); void sendMessageToBot('What\'s your maximum leverage for Gold?') }} className="px-3 py-1 rounded border text-xs">Trading Conditions</button>
-                <button onClick={() => { openChat(); void sendMessageToBot('How do I open an account?') }} className="px-3 py-1 rounded border text-xs">Account Opening</button>
-                <button onClick={() => { openChat(); void sendMessageToBot('Tell me about VIP accounts') }} className="px-3 py-1 rounded border text-xs">VIP Services</button>
+          <div className="rounded-xl p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 dark:from-[#181819] dark:to-gray-900 border shadow-sm">
+            <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Live Support Assistant</div>
+            <div className="mt-3 sm:mt-4 border rounded-md p-3 sm:p-4 bg-white dark:bg-[#181819]">
+              <div className="text-xs text-[#04858A] font-light">Apex Support AI</div>
+              <div className="mt-2 text-xs sm:text-sm text-gray sans-serif">Welcome to Apex. We provide high-end Forex brokerage support designed to make account opening, trading conditions, and compliance simple, clear, and efficient. Your trading journey starts here—with guidance you can trust.</div>
+              <div className="mt-3 sm:mt-4 flex gap-2 flex-wrap sans-serif">
+                <button onClick={() => { openChat(); void sendMessageToBot('What are your trading conditions?') }} className="px-2 sm:px-3 py-1 rounded border text-xs hover:bg-[#04858A] hover:text-white transition-colors">Trading Conditions</button>
+                <button onClick={() => { openChat(); void sendMessageToBot('How do I open an account?') }} className="px-2 sm:px-3 py-1 rounded border text-xs hover:bg-[#04858A] hover:text-white transition-colors">Account Opening</button>
+                <button onClick={() => { openChat(); void sendMessageToBot('Tell me about compliance requirements') }} className="px-2 sm:px-3 py-1 rounded border text-xs hover:bg-[#04858A] hover:text-white transition-colors">Compliance</button>
               </div>
             </div>
           </div>
         </section>
 
         {/* About */}
-        <section id="about" className="mt-20">
-          <h2 className="text-2xl font-semibold">🧠 Meet Your Senior Client Support AI</h2>
-          <p className="mt-3 text-gray-600 dark:text-gray-300">A high-precision assistant built to mirror the service level of top-tier financial institutions.</p>
-          <p className="mt-3 text-gray-600 dark:text-gray-300">Designed specifically for Money Expo Qatar, this AI showcases how brokerage clients can receive fast, compliant, and multilingual support — 24/7.</p>
-        </section>
-
-        {/* What This AI Does */}
-        <section id="services" className="mt-14">
-          <h2 className="text-2xl font-semibold mb-6">🎯 What This AI Does</h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">This assistant helps visitors with:</p>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
-              <h3 className="font-semibold">Account Opening</h3>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Questions about account setup, requirements, and verification procedures.</p>
+        <section id="about" className="mt-12 sm:mt-16 lg:mt-20">
+          <h2 className="text-xl sm:text-2xl font-light text-[#04858A]">Who We Support</h2>
+          <p className="mt-3 sm:mt-4 text-sm sm:text-base text-black">Apex is committed to guiding, supporting, and equipping you with the clarity and confidence you need to trade effectively. Your success begins with the right level of support — and that is exactly what we deliver.</p>
+          <div className="mt-4 sm:mt-6 grid sm:grid-cols-2 gap-3 sm:gap-4">
+            <div className="p-3 sm:p-4 rounded-lg bg-white dark:bg-[#181819] border">
+              <p className="text-sm sm:text-base text-gray-700 dark:text-gray-180">Individuals opening their first trading account</p>
             </div>
-            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
-              <h3 className="font-semibold">Trading Conditions</h3>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Product specifications, leverage, spreads, and trading parameters.</p>
+            <div className="p-3 sm:p-4 rounded-lg bg-white dark:bg-[#181819] border">
+              <p className="text-sm sm:text-base text-gray-700 dark:text-gray-180">Traders transitioning to improved trading conditions</p>
             </div>
-            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
-              <h3 className="font-semibold">Platform Guidance</h3>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">MT4/MT5/Web platform support and navigation assistance.</p>
+            <div className="p-3 sm:p-4 rounded-lg bg-white dark:bg-[#181819] border">
+              <p className="text-sm sm:text-base text-gray-700 dark:text-gray-180">Professional clients seeking structured compliance assistance</p>
             </div>
-            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
-              <h3 className="font-semibold">Compliance & Funding</h3>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Verification procedures, funding methods, and regulatory compliance.</p>
-            </div>
-            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border md:col-span-2">
-              <h3 className="font-semibold">VIP & Institutional</h3>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Onboarding inquiries for VIP accounts and institutional clients.</p>
+            <div className="p-3 sm:p-4 rounded-lg bg-white dark:bg-[#181819] border">
+              <p className="text-sm sm:text-base text-gray-700 dark:text-gray-180">Anyone requiring a refined, responsive, high-trust brokerage support partner</p>
             </div>
           </div>
-          <p className="mt-6 text-gray-600 dark:text-gray-300 font-medium">Always professional. Always accurate. Always compliant.</p>
         </section>
 
-        {/* How It Works */}
+        {/* What We Do */}
+        <section id="services" className="mt-10 sm:mt-14">
+          <h2 className="text-xl sm:text-2xl font-light mb-4 sm:mb-6 text-[#04858A]">What We Do</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#181819] border border-[#04858A]/20">
+              <h3 className="font-light text-base sm:text-lg mb-2 sm:mb-3 text-[#04858A]">Account Opening Made Simple</h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-180">We guide clients through every stage of the account-opening process, including selection of the appropriate account type, document submission, and verification. The process is streamlined, secure, and designed to eliminate unnecessary delays.</p>
+            </div>
+            <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#181819] border border-[#04858A]/20">
+              <h3 className="font-light text-base sm:text-lg mb-2 sm:mb-3 text-[#04858A]">Clear Trading Conditions</h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-180">We provide transparent explanations of spreads, leverage, trading instruments, and margin requirements. Our goal is to ensure every client understands the full scope of their trading environment before entering the market.</p>
+            </div>
+            <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#181819] border border-[#04858A]/20 sm:col-span-2 lg:col-span-1">
+              <h3 className="font-light text-base sm:text-lg mb-2 sm:mb-3 text-[#04858A]">Reliable Compliance Support</h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-180">From regulatory requirements to document validation, our team ensures each client meets all compliance standards accurately and efficiently. We prioritize precision, clarity, and proper handling of all compliance-related steps.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Start Your Journey */}
         <section className="mt-14">
-          <h2 className="text-2xl font-semibold mb-6">🔍 How It Works (RAG Engine)</h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">Powered by Retrieval-Augmented Generation (RAG), the AI answers using your official brokerage documents only — no outside assumptions, no guesswork.</p>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">It follows strict internal rules:</p>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
-              <h3 className="font-semibold">✔ 1. Context-Only Answers</h3>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Every reply is based 100% on the uploaded reference documents. If a detail doesn't exist, it clearly states it doesn't have that information.</p>
+          <div className="p-8 rounded-xl bg-gradient-to-br from-[#04858A]/10 to-[#04858A]/5 border border-[#04858A]/20">
+            <h2 className="text-2xl font-light mb-4 text-[#04858A]">Start Your Trading Journey With Confidence</h2>
+            <p className="mt-4 text-lg text-black">Apex is committed to guiding, supporting, and equipping you with the clarity and confidence you need to trade effectively. Your success begins with the right level of support — and that is exactly what we deliver.</p>
+          </div>
+        </section>
+
+        {/* Why Apex */}
+        <section id="projects" className="mt-10 sm:mt-14">
+          <h2 className="text-xl sm:text-2xl font-light mb-4 sm:mb-6 text-[#04858A]">Why Apex</h2>
+          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
+            <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#181819] border border-[#04858A]/20">
+              <h4 className="font-light text-base sm:text-lg mb-2 sm:mb-3 text-[#04858A]">High-End Service</h4>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-180">We deliver premium support tailored to the expectations of serious traders seeking reliability and clarity.</p>
             </div>
-            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
-              <h3 className="font-semibold">✔ 2. Zero Hallucination Policy</h3>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Nothing invented. Nothing approximated. Every number, fee, and condition is traceable back to your documents.</p>
+            <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#181819] border border-[#04858A]/20">
+              <h4 className="font-light text-base sm:text-lg mb-2 sm:mb-3 text-[#04858A]">Fast Response</h4>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-180">Our support structure ensures quick, accurate responses without unnecessary delays or repetitive steps.</p>
             </div>
-            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
-              <h3 className="font-semibold">✔ 3. Embedded Citations</h3>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Facts such as leverage, spreads, funding details, or product specs include internal source referencing (e.g., section or page number).</p>
+            <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#181819] border border-[#04858A]/20">
+              <h4 className="font-light text-base sm:text-lg mb-2 sm:mb-3 text-[#04858A]">Expert Guidance</h4>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-180">With deep market knowledge and brokerage experience, our team provides informed support that traders can trust.</p>
+            </div>
+            <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#181819] border border-[#04858A]/20">
+              <h4 className="font-light text-base sm:text-lg mb-2 sm:mb-3 text-[#04858A]">Client-First Approach</h4>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-180">We operate with transparency, professionalism, and a commitment to simplifying complex processes.</p>
             </div>
           </div>
         </section>
 
-        {/* Compliance */}
-        <section className="mt-14">
-          <h2 className="text-2xl font-semibold mb-6">🏦 Compliance-First Architecture</h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-4">Built to match the regulatory expectations of global brokers:</p>
-          <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 mb-6">
-            <li>No financial advice, ever</li>
-            <li>No trade recommendations</li>
-            <li>No predictions</li>
-            <li>No requests for passwords or sensitive information</li>
-          </ul>
-          <div className="p-4 rounded-lg bg-gray-100 dark:bg-gray-800 border-l-4 border-indigo-600">
-            <p className="text-sm text-gray-700 dark:text-gray-300 italic">"I cannot provide investment advice. I can only assist with platform mechanics and account specifications."</p>
+        {/* Brand Integration */}
+        <section className="mt-10 sm:mt-14">
+          <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#181819] border border-[#04858A]/20">
+            <h2 className="text-lg sm:text-xl font-light mb-3 sm:mb-4 text-[#04858A]">Brand Integration (Aisyncso)</h2>
+            <h3 className="font-light mb-2 text-sm sm:text-base text-gray-700 dark:text-gray-180">Aisyncso — AI Automation & RAG Chatbots</h3>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-180">This website and support flow can be fully enhanced with Aisyncso's automation systems, including AI-driven client handling, compliance assistance, and intelligent onboarding tools.</p>
           </div>
-        </section>
-
-        {/* Multilingual */}
-        <section className="mt-14">
-          <h2 className="text-2xl font-semibold mb-6">🌍 Multilingual Experience</h2>
-          <p className="text-gray-600 dark:text-gray-300">The assistant automatically responds in the user's language:</p>
-          <div className="mt-4 grid md:grid-cols-2 gap-4">
-            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
-              <h3 className="font-semibold">Professional English</h3>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">High-standard communication for international clients.</p>
-            </div>
-            <div className="p-6 rounded-xl bg-white dark:bg-gray-800 border">
-              <h3 className="font-semibold">High-Standard Arabic</h3>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Perfect for GCC clients and Expo environments where visitors switch languages quickly.</p>
-            </div>
-          </div>
-        </section>
-
-        {/* Lead Capture */}
-        <section className="mt-14">
-          <h2 className="text-2xl font-semibold mb-6">🎁 Lead Capture Behavior</h2>
-          <p className="text-gray-600 dark:text-gray-300">When a user expresses serious interest or asks advanced questions (VIP, institutional, liquidity, etc.), the AI follows up with:</p>
-          <div className="mt-4 p-4 rounded-lg bg-gray-100 dark:bg-gray-800 border-l-4 border-green-600">
-            <p className="text-sm text-gray-700 dark:text-gray-300 italic">"For this specific requirement, I recommend a quick call with our dedicated account manager. Shall I note your email?"</p>
-          </div>
-          <p className="mt-4 text-gray-600 dark:text-gray-300">Smart. Subtle. Conversion-oriented.</p>
-        </section>
-
-        {/* Sample Interaction */}
-        <section className="mt-14">
-          <h2 className="text-2xl font-semibold mb-6">💬 Sample Interaction</h2>
-          <div className="space-y-4">
-            <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-              <p className="text-sm font-semibold text-blue-900 dark:text-blue-200 mb-2">User:</p>
-              <p className="text-gray-700 dark:text-gray-300">"What's your maximum leverage for Gold?"</p>
-            </div>
-            <div className="p-4 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700">
-              <p className="text-sm font-semibold text-gray-900 dark:text-gray-200 mb-2">AI Response:</p>
-              <p className="text-gray-700 dark:text-gray-300">"According to our Account Specifications (Section 3.2), the maximum leverage for XAU/USD is 1:100 for Standard accounts and 1:200 for VIP accounts."</p>
-            </div>
-            <p className="text-sm text-gray-500 dark:text-gray-400 italic">Clean, precise, compliant.</p>
-          </div>
-        </section>
-
-        {/* Why This Demo Stands Out */}
-        <section id="projects" className="mt-14">
-          <h2 className="text-2xl font-semibold mb-6">🚀 Why This Demo Stands Out</h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">This isn't a generic chatbot.</p>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">It's a broker-grade AI built to:</p>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="p-4 rounded border bg-white dark:bg-gray-800">
-              <h4 className="font-semibold">Impress Investors</h4>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Showcase enterprise-grade AI capabilities that match top-tier financial institutions.</p>
-            </div>
-            <div className="p-4 rounded border bg-white dark:bg-gray-800">
-              <h4 className="font-semibold">Demonstrate Compliance</h4>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Prove regulatory readiness with built-in compliance-first architecture.</p>
-            </div>
-            <div className="p-4 rounded border bg-white dark:bg-gray-800">
-              <h4 className="font-semibold">Showcase AI Automation</h4>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Display how AI can handle complex support workflows 24/7.</p>
-            </div>
-            <div className="p-4 rounded border bg-white dark:bg-gray-800">
-              <h4 className="font-semibold">Improve Conversion</h4>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Smart lead capture that seamlessly transitions qualified prospects to human agents.</p>
-            </div>
-            <div className="p-4 rounded border bg-white dark:bg-gray-800 md:col-span-2">
-              <h4 className="font-semibold">Reduce Support Load</h4>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Handle routine inquiries automatically, freeing human agents for complex cases.</p>
-            </div>
-          </div>
-          <p className="mt-6 text-gray-600 dark:text-gray-300 font-medium">All while staying fast, accurate, and Expo-ready.</p>
         </section>
 
         {/* Contact */}
-        <section id="contact" className="mt-14">
-          <h2 className="text-2xl font-semibold">Contact</h2>
-          <p className="mt-2 text-gray-600 dark:text-gray-300">Interested in a demo or pilot? Drop your details below and we’ll reach out.</p>
+        <section id="contact" className="mt-10 sm:mt-14">
+          <h2 className="text-xl sm:text-2xl font-light text-[#04858A]">Contact</h2>
+          <p className="mt-3 sm:mt-4 text-sm sm:text-base lg:text-lg text-black">Ready to start your trading journey? Drop your details below and we'll reach out.</p>
 
-          <form onSubmit={handleContactSubmit} className="mt-4 grid sm:grid-cols-2 gap-4">
+          <form onSubmit={handleContactSubmit} className="mt-4 grid sm:grid-cols-2 gap-3 sm:gap-4">
             <input 
               id="contact-name"
               name="name"
               type="text"
               required 
-              className="p-3 rounded border bg-white dark:bg-gray-800" 
+              className="p-2 sm:p-3 text-sm sm:text-base rounded border bg-white dark:bg-gray-400" 
               placeholder="Your name" 
             />
             <input 
@@ -818,53 +949,73 @@ export default function Home() {
               name="email"
               type="email"
               required 
-              className="p-3 rounded border bg-white dark:bg-gray-800" 
+              className="p-2 sm:p-3 text-sm sm:text-base rounded border bg-white dark:bg-gray-400" 
               placeholder="Email" 
             />
             <textarea 
               id="contact-message"
               name="message"
               required 
-              className="p-3 rounded border bg-white dark:bg-gray-800 sm:col-span-2" 
+              className="p-2 sm:p-3 text-sm sm:text-base rounded border bg-white dark:bg-gray-400 sm:col-span-2" 
               placeholder="Tell us about your project" 
-              rows={5}
+              rows={4}
             ></textarea>
-            <button 
-              type="submit" 
-              className="bg-indigo-600 text-white px-6 py-3 rounded-md sm:col-span-2 disabled:opacity-60 disabled:cursor-not-allowed"
+            <button
+              type="submit"
+              className="bg-[#04858A] text-white px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base rounded-md sm:col-span-2 disabled:opacity-60 disabled:cursor-not-allowed hover:bg-[#037075] transition-colors"
               disabled={formStatus === 'sending'}
+              formAction="mailto:hello@aisyncso.com"
+              formMethod="post"
+              formEncType="text/plain"
             >
-              {formStatus === 'sending' ? 'Sending...' : 'Request demo'}
+              {formStatus === 'sending' ? 'Sending...' : 'Get Started'}
             </button>
             {formStatusMessage && (
-              <p className={`text-sm sm:col-span-2 ${formStatus === 'error' ? 'text-red-600' : 'text-green-600'}`}>
+              <p className={`text-sm sm:col-span-2 ${formStatus === 'error' ? 'text-red-600' : 'text-[#04858A]'}`}>
                 {formStatusMessage}
               </p>
             )}
           </form>
         </section>
-
-        <footer className="mt-20 border-t pt-6 text-sm text-gray-500 dark:text-gray-400">© 2024 Money Expo Qatar — AI Support Assistant Demo. Enterprise-grade AI for Forex Brokerage.</footer>
       </main>
 
+      <footer className="w-full bg-[#0A0E27] text-white gap-5 sans-serif">
+        <div className="w-full flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 px-4 sm:px-6 py-3 sm:py-4">
+          <span className="text-xs sm:text-sm text-white flex flex-col md:flex-row items-center justify-center gap-2 md:gap-0 sans-serif">
+            <span className="text-center md:text-left">© 2025 Apex — Premium Brokerage Support, Redefined. Powered by</span>
+            <img
+              src="/aisyncso-03.svg"
+              alt="Aisyncso Logo"
+              className="w-24 sm:w-32 md:w-36 lg:w-40 h-auto md:ml-4"
+            />
+          </span>
+        </div>
+      </footer>
+
       {/* Chat drawer */}
-      <div className={`fixed right-6 bottom-6 z-50 flex flex-col items-end gap-3`}>
+      <div className={`fixed right-4 md:right-6 bottom-4 md:bottom-6 z-50 flex flex-col items-end gap-3`}>
         {chatOpen && (
-          <div className="w-96 max-w-full shadow-2xl rounded-xl overflow-hidden border bg-white dark:bg-gray-800">
-            <div className="px-4 py-3 flex items-center justify-between border-b dark:border-gray-700">
-              <div className="font-semibold">🧠 Senior Client Support AI</div>
+          <div className="w-[calc(100vw-2rem)] md:w-96 max-w-full h-[calc(100vh-8rem)] md:h-[600px] shadow-2xl rounded-xl overflow-hidden border bg-white dark:bg-gray-400 flex flex-col">
+            <div className="px-4 py-3 flex items-center justify-between border-b dark:border-gray-700 flex-shrink-0 chat-text">
+              <div className="text-[#04858A] chat-text">Apex Support AI</div>
               <div className="flex gap-2 items-center">
-                <button onClick={() => { setMessages([]) }} title="clear" className="text-xs px-2 py-1 border rounded">Clear</button>
-                <button onClick={() => setChatOpen(false)} className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700">Close</button>
+                <button onClick={() => { setMessages([]) }} title="clear" className="text-xs px-2 py-1 border rounded chat-text">Clear</button>
+                <button onClick={() => setChatOpen(false)} className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 chat-text">Close</button>
               </div>
             </div>
 
-            <div ref={chatScrollRef} className="p-4 h-64 overflow-y-auto bg-gray-50 dark:bg-gray-900" id="chat-scroll">
-              {messages.length === 0 && <div className="text-sm text-gray-500">Hi! I can help with account opening, trading conditions, platform guidance, compliance, and more. Ask me anything!</div>}
-              <div className="flex flex-col gap-3 mt-2">
+            <div ref={chatScrollRef} className="p-4 flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900 chat-text" id="chat-scroll">
+              <div className="flex flex-col gap-3">
+                {messages.length === 0 && (
+                  <div className="max-w-[85%]">
+                    <div className="inline-block p-2 rounded-md bg-white dark:bg-[#181819] text-gray-400 dark:text-gray-100 border chat-text">
+                      Welcome to Apex. We provide high-end Forex brokerage support designed to make account opening, trading conditions, and compliance simple, clear, and efficient. Your trading journey starts here—with guidance you can trust.
+                    </div>
+                  </div>
+                )}
                 {messages.map(m => (
                   <div key={m.id} className={`max-w-[85%] ${m.from === 'user' ? 'ml-auto text-right' : ''}`}>
-                    <div className={`inline-block p-2 rounded-md ${m.from === 'user' ? 'bg-indigo-600 text-white' : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border'}`}>
+                    <div className={`inline-block p-2 rounded-md chat-text ${m.from === 'user' ? 'bg-[#04858A] text-white' : 'bg-white dark:bg-[#181819] text-gray-400 dark:text-gray-100 border'}`}>
                       {m.text}
                     </div>
                   </div>
@@ -876,11 +1027,11 @@ export default function Home() {
                 )}
                 {isLoading && (
                   <div className="max-w-[85%]">
-                    <div className="inline-block p-2 rounded-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border">
+                    <div className="inline-block p-2 rounded-md bg-white dark:bg-gray-400 text-gray-400 dark:text-gray-100 border">
                       <span className="inline-flex items-center gap-1">
                         <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
                         <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce animation-delay-150"></span>
-                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce animation-delay-300"></span>
+                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce animation-delay-180"></span>
                       </span>
                     </div>
                   </div>
@@ -888,7 +1039,7 @@ export default function Home() {
               </div>
             </div>
 
-            <form onSubmit={(e) => { e.preventDefault(); handleChatSubmit(); }} className="p-3 border-t dark:border-gray-700 bg-white dark:bg-gray-800">
+            <form onSubmit={(e) => { e.preventDefault(); handleChatSubmit(); }} className="p-3 border-t dark:border-gray-700 bg-white dark:bg-gray-400 flex-shrink-0 chat-text">
               <div className="flex gap-2">
                 <input 
                   id="chat-message"
@@ -896,12 +1047,12 @@ export default function Home() {
                   type="text"
                   ref={inputRef} 
                   placeholder="Type message..." 
-                  className="flex-1 p-2 rounded border bg-white dark:bg-gray-700" 
+                  className="flex-1 p-2 rounded border bg-white dark:bg-gray-700 chat-text" 
                   disabled={isLoading}
                 />
                 <button 
                   type="submit" 
-                  className="px-3 py-1 rounded bg-indigo-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 py-1 rounded bg-[#04858A] text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#037075] transition-colors chat-text"
                   disabled={isLoading}
                 >
                   {isLoading ? '...' : 'Send'}
@@ -912,7 +1063,7 @@ export default function Home() {
         )}
 
         {!chatOpen && (
-          <button onClick={openChat} aria-label="Open chat" className="bg-indigo-600 text-white p-3 rounded-full shadow-lg">Chat</button>
+          <button onClick={openChat} aria-label="Open chat" className="bg-[#04858A] text-white p-2 sm:p-3 text-xs sm:text-sm rounded-full shadow-lg hover:bg-[#037075] transition-colors">Chat</button>
         )}
       </div>
     </div>
