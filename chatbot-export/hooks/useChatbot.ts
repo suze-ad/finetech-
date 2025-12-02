@@ -241,21 +241,7 @@ export function useChatbot() {
       // Provide more specific error messages
       let errorMessage = 'Sorry, I\'m having trouble connecting. Please try again.'
       
-      if (error instanceof Error) {
-        if (error.message?.includes('n8n workflow error')) {
-          // Show the n8n-specific error message directly
-          errorMessage = error.message.replace('n8n workflow error: ', '')
-        } else if (error.message?.includes('No Respond to Webhook node')) {
-          errorMessage = '⚠️ n8n Workflow Configuration Error: Your n8n workflow is missing a "Respond to Webhook" node. Please add one at the end of your workflow to return a response to the chatbot.'
-        } else if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError')) {
-          errorMessage = 'Network error: Could not reach the server. Please check your internet connection and try again.'
-        } else if (error.message?.includes('n8n webhook error')) {
-          // Extract the actual error from n8n
-          errorMessage = error.message.replace('n8n webhook error (', '⚠️ n8n Error: ').replace(/\): /, ' - ')
-        } else if (error.message) {
-          errorMessage = `Error: ${error.message}`
-        }
-      }
+     
       
       addMessage('bot', errorMessage)
       return errorMessage

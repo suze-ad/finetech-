@@ -267,6 +267,52 @@ export default function Home() {
     ensureSessionId({ createIfMissing: true })
   }, [chatOpen, isClient, ensureSessionId])
 
+  // Play typing sound when chatbot starts typing
+  useEffect(() => {
+    if (!isClient || !isLoading) return
+
+    // Create a subtle typing sound using Web Audio API
+    function playTypingSound() {
+      try {
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+        const oscillator = audioContext.createOscillator()
+        const gainNode = audioContext.createGain()
+
+        oscillator.connect(gainNode)
+        gainNode.connect(audioContext.destination)
+
+        // Subtle typing sound - higher frequency, very short
+        oscillator.frequency.value = 1200
+        oscillator.type = 'sine'
+
+        gainNode.gain.setValueAtTime(0.05, audioContext.currentTime)
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.05)
+
+        oscillator.start(audioContext.currentTime)
+        oscillator.stop(audioContext.currentTime + 0.05)
+      } catch (err) {
+        // Silently fail if audio context is not available
+        console.debug('Audio context not available:', err)
+      }
+    }
+
+    // Play sound immediately when typing starts
+    playTypingSound()
+
+    // Play periodic typing sounds while loading
+    const typingInterval = setInterval(() => {
+      if (isLoading) {
+        playTypingSound()
+      } else {
+        clearInterval(typingInterval)
+      }
+    }, 600) // Play every 600ms while typing
+
+    return () => {
+      clearInterval(typingInterval)
+    }
+  }, [isLoading, isClient])
+
   async function sendMessageToBot(userInput: string | Record<string, unknown>) {
     const isObjectPayload = typeof userInput === 'object'
     const userText = typeof userInput === 'string' ? userInput : (userInput.chatInput as string || userInput.message as string || userInput.userMessage as string || '')
@@ -1021,11 +1067,11 @@ export default function Home() {
                 )}
                 {isLoading && (
                   <div className="max-w-[85%]">
-                    <div className="inline-block p-2 rounded-md bg-white dark:bg-gray-400 text-gray-400 dark:text-gray-100 border">
-                      <span className="inline-flex items-center gap-1">
-                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
-                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce animation-delay-150"></span>
-                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce animation-delay-180"></span>
+                    <div className="inline-block p-2 rounded-md bg-white dark:bg-gray-400 border chat-text">
+                      <span className="inline-flex items-center gap-1.5 px-1">
+                        <span className="typing-dot w-2 h-2 bg-[#04858A] rounded-full"></span>
+                        <span className="typing-dot w-2 h-2 bg-[#04858A] rounded-full"></span>
+                        <span className="typing-dot w-2 h-2 bg-[#04858A] rounded-full"></span>
                       </span>
                     </div>
                   </div>

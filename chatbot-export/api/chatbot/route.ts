@@ -40,34 +40,16 @@ export async function POST(request: NextRequest) {
           errorMessage = await res.text().catch(() => '')
         }
         
-        // Create a more helpful error message
-        if (errorMessage.includes('No Respond to Webhook node')) {
-          throw new Error('n8n workflow error: Your n8n workflow is missing a "Respond to Webhook" node. Please add one at the end of your workflow to return a response.')
-        }
+       
         
         throw new Error(`n8n webhook error (${res.status}): ${errorMessage || 'Unknown error'}`)
       }
 
       const rawBody = await res.text();
       
-      if (!rawBody) {
-        return {
-          message: 'I received your request, but the automation did not send any reply. Please ensure your n8n workflow ends with a "Respond to Webhook" node that returns JSON.',
-          warning: 'n8n webhook returned an empty response.',
-          error: 'EMPTY_RESPONSE',
-        }
-      }
+  
 
-      try {
-        return JSON.parse(rawBody);
-      } catch {
-        console.warn('n8n returned non-JSON response, forwarding as text:', rawBody);
-        return {
-          message: typeof rawBody === 'string' && rawBody.trim() ? rawBody : 'Your automation responded with non-JSON content. Please update the n8n "Respond to Webhook" node to return valid JSON.',
-          warning: 'n8n webhook responded with non-JSON content. Returning raw text.',
-          error: 'NON_JSON_RESPONSE',
-        }
-      }
+    
     }
     
     // Extract parameters from request body
