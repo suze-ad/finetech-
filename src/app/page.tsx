@@ -628,7 +628,7 @@ export default function Home() {
   }
 
   if (showIntro) {
-    return (
+  return (
       <div style={{
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
         backgroundColor: '#f0f2f5',
@@ -900,7 +900,7 @@ export default function Home() {
             <div className="p-3 sm:p-4 rounded-lg bg-white dark:bg-[#181819] border">
               <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300">Anyone requiring a refined, responsive, high-trust brokerage support partner</p>
             </div>
-          </div>
+            </div>
         </section>
 
         {/* What We Do */}
@@ -945,11 +945,11 @@ export default function Home() {
             <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#181819] border border-[#04858A]/20">
               <h4 className="font-light text-base sm:text-lg mb-2 sm:mb-3 text-[#04858A]">Expert Guidance</h4>
               <p className="text-xs sm:text-sm text-gray-300 dark:text-gray-300">With deep market knowledge and brokerage experience, our team provides informed support that traders can trust.</p>
-            </div>
+          </div>
             <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#181819] border border-[#04858A]/20">
               <h4 className="font-light text-base sm:text-lg mb-2 sm:mb-3 text-[#04858A]">Client-First Approach</h4>
               <p className="text-xs sm:text-sm text-gray-300 dark:text-gray-300">We operate with transparency, professionalism, and a commitment to simplifying complex processes.</p>
-            </div>
+          </div>
           </div>
         </section>
 
@@ -959,7 +959,7 @@ export default function Home() {
             <h2 className="text-lg sm:text-xl font-light mb-3 sm:mb-4 text-[#04858A]">Brand Integration (Aisyncso)</h2>
             <h3 className="font-light mb-2 text-sm sm:text-base text-gray-700 dark:text-gray-300">Aisyncso — AI Automation & RAG Chatbots</h3>
             <p className="text-xs sm:text-sm text-gray-300 dark:text-gray-300">This website and support flow can be fully enhanced with Aisyncso's automation systems, including AI-driven client handling, compliance assistance, and intelligent onboarding tools.</p>
-          </div>
+            </div>
         </section>
 
         {/* Contact */}
